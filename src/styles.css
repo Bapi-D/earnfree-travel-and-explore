@@ -1,0 +1,555 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-charcoal: var(--charcoal);
+  --color-gold: var(--gold);
+
+  --font-display: "Montserrat", system-ui, sans-serif;
+  --font-sans: "Poppins", system-ui, sans-serif;
+  /* Prefer a high-contrast display serif for hero headings (elegant travel look) */
+  --font-display-alt: "Playfair Display", "Fraunces", var(--font-display);
+  --font-body-travel: "Sora", var(--font-sans);
+
+  --shadow-elegant: 0 20px 60px -20px color-mix(in oklab, var(--primary) 35%, transparent);
+  --shadow-soft: 0 10px 40px -15px oklch(0 0 0 / 0.15);
+  --shadow-gold: 0 12px 40px -12px color-mix(in oklab, var(--gold) 50%, transparent);
+
+  --gradient-hero: linear-gradient(
+    180deg,
+    rgba(12, 30, 44, 0.75) 0%,
+    rgba(20, 38, 56, 0.55) 45%,
+    rgba(40, 56, 72, 0.35) 100%
+  );
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    color-mix(in oklab, var(--primary) 70%, var(--gold)) 100%
+  );
+  --gradient-gold: linear-gradient(135deg, var(--gold) 0%, oklch(0.78 0.18 65) 100%);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Brand */
+  --primary: oklch(0.55 0.21 27); /* #D0232C */
+  --primary-foreground: oklch(0.99 0 0);
+  --gold: oklch(0.78 0.17 70); /* #F4A300 */
+  --charcoal: oklch(0.18 0.01 270); /* #111111 */
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.18 0.01 270);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.01 270);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.01 270);
+  --secondary: oklch(0.97 0.005 270); /* light gray #F8F8F8 */
+  --secondary-foreground: oklch(0.18 0.01 270);
+  --muted: oklch(0.97 0.005 270);
+  --muted-foreground: oklch(0.45 0.01 270);
+  --accent: oklch(0.78 0.17 70);
+  --accent-foreground: oklch(0.18 0.01 270);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.92 0.005 270);
+  --input: oklch(0.92 0.005 270);
+  --ring: oklch(0.55 0.21 27);
+
+  --chart-1: oklch(0.55 0.21 27);
+  --chart-2: oklch(0.78 0.17 70);
+  --chart-3: oklch(0.6 0.118 184.704);
+  --chart-4: oklch(0.398 0.07 227.392);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  --sidebar: oklch(0.99 0 0);
+  --sidebar-foreground: oklch(0.18 0.01 270);
+  --sidebar-primary: oklch(0.55 0.21 27);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.97 0.005 270);
+  --sidebar-accent-foreground: oklch(0.18 0.01 270);
+  --sidebar-border: oklch(0.92 0.005 270);
+  --sidebar-ring: oklch(0.55 0.21 27);
+}
+
+.dark {
+  --background: oklch(0.14 0.01 270);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.18 0.01 270);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.18 0.01 270);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.62 0.21 27);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.22 0.01 270);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.22 0.01 270);
+  --muted-foreground: oklch(0.7 0.01 270);
+  --accent: oklch(0.78 0.17 70);
+  --accent-foreground: oklch(0.18 0.01 270);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.62 0.21 27);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display-alt);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+  h1 {
+    font-weight: 800;
+  }
+  .font-display {
+    font-family: var(--font-display);
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 30%, transparent);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [role="button"],
+  label {
+    cursor: auto;
+  }
+}
+
+@layer utilities {
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-hero-gradient {
+    background: var(--gradient-hero);
+  }
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: color-mix(in oklab, white 60%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid color-mix(in oklab, white 40%, transparent);
+  }
+  .glass-dark {
+    background: color-mix(in oklab, oklch(0.18 0.01 270) 55%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklab, white 12%, transparent);
+  }
+  .glass-card {
+    background: linear-gradient(
+      140deg,
+      color-mix(in oklab, white 72%, transparent),
+      color-mix(in oklab, white 48%, transparent)
+    );
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklab, white 60%, transparent);
+    box-shadow:
+      0 24px 60px -28px oklch(0 0 0 / 0.25),
+      inset 0 1px 0 0 color-mix(in oklab, white 80%, transparent);
+  }
+
+  /* Hero specific */
+  .hero-cta-primary {
+    background: linear-gradient(
+      90deg,
+      var(--primary),
+      color-mix(in oklab, var(--primary) 70%, var(--gold))
+    );
+    color: var(--primary-foreground);
+  }
+  .btn-orange {
+    background: var(--gold);
+    color: var(--charcoal);
+  }
+
+  /* Hero caption / display styling */
+  .hero-caption {
+    font-family: var(--font-display-alt);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    text-wrap: balance;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Subtle text shadow for better contrast on hero image */
+    text-shadow: 0 6px 18px rgba(2, 8, 23, 0.45);
+  }
+
+  .hero-caption .hero-accent {
+    font-style: italic;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+  }
+
+  .hero-body {
+    font-family: var(--font-body-travel);
+    font-weight: 300;
+    letter-spacing: 0;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Right stacked cards styling */
+  .cards-stack img {
+    border-radius: 14px;
+  }
+
+  /* Smooth floating animation for stacked hero images */
+  @keyframes float-smooth {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-22px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  .floating-img {
+    animation: float-smooth 6s ease-in-out infinite;
+    will-change: transform;
+    transform-origin: center;
+  }
+
+  /* Logo crop utility: show centered mark, zoom to hide transparent padding */
+  /* Logo cropping utility removed — using natural <img> rendering now */
+
+  /* Section rhythm — generous luxury whitespace */
+  .section {
+    padding-top: clamp(5rem, 10vw, 9rem);
+    padding-bottom: clamp(5rem, 10vw, 9rem);
+  }
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    color: var(--gold);
+  }
+  .divider-gold {
+    width: 56px;
+    height: 2px;
+    background: var(--gradient-gold);
+    border-radius: 999px;
+  }
+
+  @keyframes float-plane {
+    0% {
+      transform: translate(-10vw, 20vh) rotate(8deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.9;
+    }
+    90% {
+      opacity: 0.9;
+    }
+    100% {
+      transform: translate(110vw, -10vh) rotate(8deg);
+      opacity: 0;
+    }
+  }
+  .animate-plane {
+    animation: float-plane 22s linear infinite;
+  }
+
+  /* Projectile plane for footer: left → right with arc */
+  @keyframes plane-projectile {
+    0% {
+      offset-distance: 0%;
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    92% {
+      opacity: 1;
+    }
+    100% {
+      offset-distance: 100%;
+      opacity: 0;
+    }
+  }
+  .animate-plane-projectile {
+    offset-path: path("M 0 80 Q 50 -40 100 40 T 200 30");
+    offset-rotate: auto;
+    animation: plane-projectile 14s ease-in-out infinite;
+  }
+
+  /* Marquee for review slider */
+  @keyframes marquee-x {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  .animate-marquee {
+    animation: marquee-x 40s linear infinite;
+  }
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
+  /* Glowing gradient border */
+  .glow-border {
+    position: relative;
+    background: linear-gradient(
+      140deg,
+      color-mix(in oklab, white 8%, transparent),
+      color-mix(in oklab, white 2%, transparent)
+    );
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+  }
+  .glow-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      var(--primary),
+      var(--gold),
+      color-mix(in oklab, var(--primary) 50%, var(--gold))
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.75;
+  }
+  .glow-border::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--primary) 40%, transparent),
+      color-mix(in oklab, var(--gold) 40%, transparent)
+    );
+    filter: blur(18px);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .glow-border:hover::after {
+    opacity: 0.7;
+  }
+
+  @keyframes float-y {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+  .animate-float {
+    animation: float-y 6s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  .text-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--foreground) 0%,
+      var(--gold) 50%,
+      var(--foreground) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 6s linear infinite;
+  }
+
+  @keyframes cursor-smoke {
+    0% {
+      transform: translate(-50%, -50%) translate(0, 0) scale(0.55);
+      opacity: 0.8;
+      filter: blur(4px);
+    }
+    100% {
+      transform: translate(-50%, -50%) translate(-18px, 10px) scale(1.5);
+      opacity: 0;
+      filter: blur(16px);
+    }
+  }
+
+  .cursor-smoke-puff {
+    position: absolute;
+    width: 28px;
+    height: 18px;
+    border-radius: 999px;
+    background: radial-gradient(
+      circle at 35% 40%,
+      color-mix(in oklab, var(--gold) 36%, white) 0%,
+      color-mix(in oklab, var(--primary) 30%, transparent) 42%,
+      transparent 72%
+    );
+    filter: blur(10px);
+    animation: cursor-smoke 0.85s ease-out forwards;
+    transform-origin: center;
+    mix-blend-mode: screen;
+  }
+
+  /* Footer Transport Animations */
+  @keyframes plane-travel {
+    0% {
+      left: -10%;
+      opacity: 0;
+    }
+    5% {
+      opacity: 0.9;
+    }
+    95% {
+      opacity: 0.9;
+    }
+    100% {
+      left: 110%;
+      opacity: 0;
+    }
+  }
+  .animate-plane-travel {
+    left: -10%;
+    animation: plane-travel 28s linear infinite;
+    animation-delay: 0s;
+  }
+
+  @keyframes bus-travel {
+    0% {
+      left: -12%;
+      opacity: 0;
+    }
+    5% {
+      opacity: 0.95;
+    }
+    95% {
+      opacity: 0.95;
+    }
+    100% {
+      left: 110%;
+      opacity: 0;
+    }
+  }
+  .animate-bus-travel {
+    left: -12%;
+    animation: bus-travel 24s linear infinite;
+    animation-delay: 4s;
+  }
+
+  @keyframes train-travel {
+    0% {
+      right: -15%;
+      opacity: 0;
+    }
+    5% {
+      opacity: 0.95;
+    }
+    95% {
+      opacity: 0.95;
+    }
+    100% {
+      right: 110%;
+      opacity: 0;
+    }
+  }
+  .animate-train-travel {
+    right: -15%;
+    animation: train-travel 32s linear infinite;
+    animation-delay: 8s;
+  }
+}
