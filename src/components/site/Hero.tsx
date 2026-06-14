@@ -183,7 +183,7 @@ export function Hero() {
                   {currentSlide.subtitle}
                 </h2>
 
-                <p className="mt-8 text-lg md:text-xl text-white/80 leading-relaxed max-w-xl">
+                <p className="mt-6 text-[14px] sm:text-base md:text-lg lg:text-xl text-white/80 leading-relaxed max-w-xl break-words overflow-hidden [text-wrap:balance]">
                   {currentSlide.description}
                 </p>
               </motion.div>
@@ -220,7 +220,7 @@ export function Hero() {
                 </Button>
               </Link>
             </motion.div>
-                   {/* SEARCH BOX */}
+            {/* SEARCH BOX */}
             <motion.div
               initial={{
                 opacity: 0,
@@ -236,7 +236,7 @@ export function Hero() {
               }}
               className="mt-10 max-w-2xl relative"
             >
-              <div className="flex items-center rounded-[40px] bg-white/10 backdrop-blur-2xl border border-white/20 p-2 shadow-2xl">
+              <div className="flex items-center rounded-[40px] bg-white/10 backdrop-blur-2xl border border-white/20 p-2 shadow-2xl w-full max-w-full overflow-hidden">
 
                 <Search className="ml-4 text-white/70 h-5 w-5" />
 
