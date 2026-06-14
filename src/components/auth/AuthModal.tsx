@@ -51,7 +51,16 @@ export function AuthModal() {
     setBusy(true);
     const res = await signInWithGoogle();
     setBusy(false);
-    if (res.error) toast.error(res.error);
+    if (res.error) {
+      toast.error(res.error);
+      return;
+    }
+    toast.success("Welcome back!");
+    closeAuthModal();
+    setEmail("");
+    setMobileNumber("");
+    setPassword("");
+    setName("");
   };
 
   return (

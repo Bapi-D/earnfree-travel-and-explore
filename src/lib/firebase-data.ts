@@ -1,23 +1,11 @@
-import {
-  collection,
-  addDoc,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  limit,
-  orderBy,
-  onSnapshot,
-  query,
-  setDoc,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { firebaseStorage, firestore } from "@/integrations/firebase/client";
 import { packages as samplePackages, type Package } from "@/data/packages";
 import { PUBLIC_DESTINATIONS } from "@/data/destinations";
+
+// NOTE:
+// This file originally contained Firebase (Firestore/Storage) fallbacks for many admin flows.
+// Per architecture, the package flow must be MongoDB + Multer/uploads only.
+// Remaining non-package/admin-sync utilities are intentionally left untouched.
+
 
 export type FirestoreEnquiryRow = {
   id: string;
@@ -325,6 +313,34 @@ export async function recordVisit(data: { path?: string; userAgent?: string; dev
 
 export async function getFirestorePackages() {
   try {
+    // Try API first
+    const response = await fetch('/api/packages?limit=100', {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      const apiPackages = await response.json();
+      if (Array.isArray(apiPackages) && apiPackages.length > 0) {
+        // Transform API response to match Package type
+        return apiPackages.map((pkg: any) => ({
+          id: pkg.id,
+          name: pkg.title || "Untitled package",
+          destination: pkg.location || pkg.destination || "",
+          category: (pkg.category as Package["category"]) || "Domestic",
+          duration: pkg.duration || "",
+          price: Number(pkg.price || 0),
+          rating: Number(pkg.rating || 4.7),
+          image: pkg.image_url || "",
+          highlights: pkg.highlights || [],
+        }));
+      }
+    }
+  } catch (apiError) {
+    console.debug('API fetch failed, trying Firebase:', apiError);
+  }
+
+  // Fallback to Firebase
+  try {
     const snapshot = await getDocs(query(collection(firestore, "packages"), orderBy("created_at", "desc")));
 
     const packages = snapshot.docs.map((doc) => {
@@ -349,6 +365,37 @@ export async function getFirestorePackages() {
 }
 
 export async function getFirestoreAdminPackages() {
+  try {
+    // Try API first
+    const response = await fetch('/api/packages?admin=true&limit=100', {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      const apiPackages = await response.json();
+      if (Array.isArray(apiPackages)) {
+        return apiPackages.map((pkg: any) => ({
+          id: pkg.id,
+          title: pkg.title || "Untitled package",
+          description: pkg.description || "",
+          image_url: pkg.image_url || "",
+          price: Number(pkg.price || 0),
+          location: pkg.location || "",
+          duration: pkg.duration || "",
+          category: (pkg.category || "Domestic") as FirestorePackageRow["category"],
+          featured: Boolean(pkg.featured),
+          rating: Number(pkg.rating || 4.7),
+          highlights: pkg.highlights || [],
+          created_at: pkg.created_at,
+          updated_at: pkg.updated_at,
+        }));
+      }
+    }
+  } catch (apiError) {
+    console.debug('API fetch failed, trying Firebase:', apiError);
+  }
+
+  // Fallback to Firebase
   try {
     const snapshot = await getDocs(query(collection(firestore, "packages"), orderBy("created_at", "desc"), limit(100)));
 
@@ -376,31 +423,177 @@ export async function getFirestoreAdminPackages() {
 }
 
 export async function uploadFirestorePackageImage(file: File) {
-  const ext = file.name.split(".").pop() || "jpg";
-  const path = `package-images/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const storageRef = ref(firebaseStorage, path);
-  await uploadBytes(storageRef, file);
-  return getDownloadURL(storageRef);
+  // Get Firebase token for authentication
+  let token: string | null = null;
+  try {
+    const user = firebaseAuth.currentUser;
+    if (user) {
+      token = await user.getIdToken();
+    }
+  } catch (error) {
+    console.debug('Could not get Firebase token:', error);
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  if (file) {
+    console.debug('[upload] selected file', {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+    });
+  }
+
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    headers: Object.keys(headers).length > 0 ? headers : undefined,
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    console.error('[upload] failed response', {
+      status: response.status,
+      statusText: response.statusText,
+      body: error,
+    });
+    if (response.status === 401) {
+      throw new Error('Admin authentication required. Please log in again.');
+    }
+    throw new Error(error.statusMessage || `Upload failed: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  console.debug('[upload] success response', data);
+  if (!data.imageUrl) {
+    throw new Error('No image URL returned from upload');
+  }
+
+  return data.imageUrl;
 }
 
 export async function createFirestorePackage(data: Omit<FirestorePackageRow, "id" | "created_at" | "updated_at">) {
-  const docRef = await addDoc(collection(firestore, "packages"), {
-    ...data,
-    created_at: serverTimestamp(),
-    updated_at: serverTimestamp(),
-  });
-  return docRef.id;
+  try {
+    // Get Firebase token for authentication
+    let token: string | null = null;
+    try {
+      const user = firebaseAuth.currentUser;
+      if (user) {
+        token = await user.getIdToken();
+      }
+    } catch (error) {
+      console.debug('Could not get Firebase token:', error);
+    }
+
+    const headers: Record<string, string> = { 'content-type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Try API first
+    const response = await fetch('/api/packages', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      return result.id;
+    } else if (response.status === 401) {
+      throw new Error('Admin authentication required. Please log in again.');
+    }
+  } catch (apiError) {
+    console.debug('API create failed, trying Firebase:', apiError);
+  }
+
+  // Fallback to Firebase
+  try {
+    const docRef = await addDoc(collection(firestore, "packages"), {
+      ...data,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error('Both create methods failed:', error);
+    throw error;
+  }
 }
 
 export async function updateFirestorePackage(id: string, data: Omit<FirestorePackageRow, "id" | "created_at" | "updated_at">) {
-  await updateDoc(doc(firestore, "packages", id), {
-    ...data,
-    updated_at: serverTimestamp(),
-  });
+  try {
+    // Get Firebase token for authentication
+    let token: string | null = null;
+    try {
+      const user = firebaseAuth.currentUser;
+      if (user) {
+        token = await user.getIdToken();
+      }
+    } catch (error) {
+      console.debug('Could not get Firebase token:', error);
+    }
+
+    const headers: Record<string, string> = { 'content-type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Try API first
+    const response = await fetch(`/api/packages/${id}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      return;
+    } else if (response.status === 401) {
+      throw new Error('Admin authentication required. Please log in again.');
+    }
+  } catch (apiError) {
+    console.debug('API update failed, trying Firebase:', apiError);
+  }
+
+  // Fallback to Firebase
+  try {
+    await updateDoc(doc(firestore, "packages", id), {
+      ...data,
+      updated_at: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Both update methods failed:', error);
+    throw error;
+  }
 }
 
 export async function deleteFirestorePackage(id: string) {
-  await deleteDoc(doc(firestore, "packages", id));
+  try {
+    // Try API first
+    const response = await fetch(`/api/packages/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      return;
+    }
+  } catch (apiError) {
+    console.debug('API delete failed, trying Firebase:', apiError);
+  }
+
+  // Fallback to Firebase
+  try {
+    await deleteDoc(doc(firestore, "packages", id));
+  } catch (error) {
+    console.error('Both delete methods failed:', error);
+    throw error;
+  }
 }
 
 export async function getFirestoreDestinations() {

@@ -8,47 +8,6 @@ const GOOGLE_REVIEW_URL =
   "https://www.google.com/search?kgmid=%2Fg%2F11qvg72x1x&hl=en-IN&q=Earnfree%20Travel%20And%20Explore&shem=rimspwouoe&shndl=30&source=sh%2Fx%2Floc%2Fosrp%2Fm5%2F4&kgs=ba69341f2713673c";
 
 export function Testimonials() {
-  const widgetRef = useRef<HTMLDivElement | null>(null);
-  const [shouldLoadWidget, setShouldLoadWidget] = useState(false);
-
-  useEffect(() => {
-    const widgetRoot = widgetRef.current;
-
-    if (!widgetRoot || shouldLoadWidget) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setShouldLoadWidget(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "200px" },
-    );
-
-    observer.observe(widgetRoot);
-
-    return () => observer.disconnect();
-  }, [shouldLoadWidget]);
-
-  useEffect(() => {
-    const widgetRoot = widgetRef.current;
-
-    if (!widgetRoot || !shouldLoadWidget || widgetRoot.querySelector(`script[src="${TRUSTINDEX_SCRIPT_SRC}"]`)) {
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.defer = true;
-    script.async = true;
-    script.src = TRUSTINDEX_SCRIPT_SRC;
-    widgetRoot.appendChild(script);
-
-    return () => {
-      script.remove();
-    };
-  }, [shouldLoadWidget]);
-
   return (
     <section className="section bg-charcoal text-white relative overflow-hidden">
       <div className="pointer-events-none absolute -top-40 left-1/4 h-[420px] w-[420px] rounded-full bg-primary/15 blur-3xl" />
@@ -75,12 +34,14 @@ export function Testimonials() {
       </div>
 
       <div className="relative mt-14 px-6">
-        <div
-          ref={widgetRef}
-          className="mx-auto max-w-6xl rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-6 shadow-elegant"
-        >
-        </div>
+          {/* Elfsight Google Reviews | Untitled Google Reviews */}
+          <script src="https://elfsightcdn.com/platform.js" async></script>
+          <div
+            className="elfsight-app-ce192b80-a1fc-4c53-8e86-0e4ae4953c36"
+            data-elfsight-app-lazy
+          ></div>
       </div>
     </section>
   );
 }
+

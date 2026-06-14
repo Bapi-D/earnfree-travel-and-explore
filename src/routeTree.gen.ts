@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Staff1RouteImport } from './routes/staff1'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as OptionsRouteImport } from './routes/options'
@@ -19,6 +20,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as SearchPackageIdRouteImport } from './routes/search.$packageId'
+import { Route as PackagePackageIdRouteImport } from './routes/package.$packageId'
 import { Route as ContactPageRouteImport } from './routes/contact.page'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
 import { Route as AdminProfilesRouteImport } from './routes/admin.profiles'
@@ -29,6 +32,11 @@ import { Route as AdminDestinationsRouteImport } from './routes/admin.destinatio
 const Staff1Route = Staff1RouteImport.update({
   id: '/staff1',
   path: '/staff1',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -76,6 +84,16 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const SearchPackageIdRoute = SearchPackageIdRouteImport.update({
+  id: '/$packageId',
+  path: '/$packageId',
+  getParentRoute: () => SearchRoute,
+} as any)
+const PackagePackageIdRoute = PackagePackageIdRouteImport.update({
+  id: '/package/$packageId',
+  path: '/package/$packageId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactPageRoute = ContactPageRouteImport.update({
   id: '/contact/page',
   path: '/contact/page',
@@ -116,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/options': typeof OptionsRoute
   '/packages': typeof PackagesRoute
   '/profile': typeof ProfileRoute
+  '/search': typeof SearchRouteWithChildren
   '/staff1': typeof Staff1Route
   '/admin/destinations': typeof AdminDestinationsRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
@@ -123,6 +142,8 @@ export interface FileRoutesByFullPath {
   '/admin/profiles': typeof AdminProfilesRoute
   '/admin/staff': typeof AdminStaffRoute
   '/contact/page': typeof ContactPageRoute
+  '/package/$packageId': typeof PackagePackageIdRoute
+  '/search/$packageId': typeof SearchPackageIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -133,6 +154,7 @@ export interface FileRoutesByTo {
   '/options': typeof OptionsRoute
   '/packages': typeof PackagesRoute
   '/profile': typeof ProfileRoute
+  '/search': typeof SearchRouteWithChildren
   '/staff1': typeof Staff1Route
   '/admin/destinations': typeof AdminDestinationsRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
@@ -140,6 +162,8 @@ export interface FileRoutesByTo {
   '/admin/profiles': typeof AdminProfilesRoute
   '/admin/staff': typeof AdminStaffRoute
   '/contact/page': typeof ContactPageRoute
+  '/package/$packageId': typeof PackagePackageIdRoute
+  '/search/$packageId': typeof SearchPackageIdRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -152,6 +176,7 @@ export interface FileRoutesById {
   '/options': typeof OptionsRoute
   '/packages': typeof PackagesRoute
   '/profile': typeof ProfileRoute
+  '/search': typeof SearchRouteWithChildren
   '/staff1': typeof Staff1Route
   '/admin/destinations': typeof AdminDestinationsRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
@@ -159,6 +184,8 @@ export interface FileRoutesById {
   '/admin/profiles': typeof AdminProfilesRoute
   '/admin/staff': typeof AdminStaffRoute
   '/contact/page': typeof ContactPageRoute
+  '/package/$packageId': typeof PackagePackageIdRoute
+  '/search/$packageId': typeof SearchPackageIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -172,6 +199,7 @@ export interface FileRouteTypes {
     | '/options'
     | '/packages'
     | '/profile'
+    | '/search'
     | '/staff1'
     | '/admin/destinations'
     | '/admin/enquiries'
@@ -179,6 +207,8 @@ export interface FileRouteTypes {
     | '/admin/profiles'
     | '/admin/staff'
     | '/contact/page'
+    | '/package/$packageId'
+    | '/search/$packageId'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -189,6 +219,7 @@ export interface FileRouteTypes {
     | '/options'
     | '/packages'
     | '/profile'
+    | '/search'
     | '/staff1'
     | '/admin/destinations'
     | '/admin/enquiries'
@@ -196,6 +227,8 @@ export interface FileRouteTypes {
     | '/admin/profiles'
     | '/admin/staff'
     | '/contact/page'
+    | '/package/$packageId'
+    | '/search/$packageId'
     | '/admin'
   id:
     | '__root__'
@@ -207,6 +240,7 @@ export interface FileRouteTypes {
     | '/options'
     | '/packages'
     | '/profile'
+    | '/search'
     | '/staff1'
     | '/admin/destinations'
     | '/admin/enquiries'
@@ -214,6 +248,8 @@ export interface FileRouteTypes {
     | '/admin/profiles'
     | '/admin/staff'
     | '/contact/page'
+    | '/package/$packageId'
+    | '/search/$packageId'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -226,8 +262,10 @@ export interface RootRouteChildren {
   OptionsRoute: typeof OptionsRoute
   PackagesRoute: typeof PackagesRoute
   ProfileRoute: typeof ProfileRoute
+  SearchRoute: typeof SearchRouteWithChildren
   Staff1Route: typeof Staff1Route
   ContactPageRoute: typeof ContactPageRoute
+  PackagePackageIdRoute: typeof PackagePackageIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -237,6 +275,13 @@ declare module '@tanstack/react-router' {
       path: '/staff1'
       fullPath: '/staff1'
       preLoaderRoute: typeof Staff1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -301,6 +346,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/search/$packageId': {
+      id: '/search/$packageId'
+      path: '/$packageId'
+      fullPath: '/search/$packageId'
+      preLoaderRoute: typeof SearchPackageIdRouteImport
+      parentRoute: typeof SearchRoute
+    }
+    '/package/$packageId': {
+      id: '/package/$packageId'
+      path: '/package/$packageId'
+      fullPath: '/package/$packageId'
+      preLoaderRoute: typeof PackagePackageIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/contact/page': {
       id: '/contact/page'
@@ -367,6 +426,17 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface SearchRouteChildren {
+  SearchPackageIdRoute: typeof SearchPackageIdRoute
+}
+
+const SearchRouteChildren: SearchRouteChildren = {
+  SearchPackageIdRoute: SearchPackageIdRoute,
+}
+
+const SearchRouteWithChildren =
+  SearchRoute._addFileChildren(SearchRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -376,8 +446,10 @@ const rootRouteChildren: RootRouteChildren = {
   OptionsRoute: OptionsRoute,
   PackagesRoute: PackagesRoute,
   ProfileRoute: ProfileRoute,
+  SearchRoute: SearchRouteWithChildren,
   Staff1Route: Staff1Route,
   ContactPageRoute: ContactPageRoute,
+  PackagePackageIdRoute: PackagePackageIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

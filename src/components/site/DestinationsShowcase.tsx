@@ -57,9 +57,8 @@ export function DestinationsShowcase() {
 
   if (q) {
     const lower = q.toLowerCase();
-    const matches = packagesData.filter(
-      (p) => p.destination.toLowerCase().includes(lower) || p.name.toLowerCase().includes(lower),
-    );
+    const matches = packagesData.filter((p) => p.destination.toLowerCase() === lower);
+
 
     return (
       <section className="section bg-background relative overflow-hidden">

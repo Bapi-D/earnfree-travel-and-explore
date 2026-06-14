@@ -1,4 +1,4 @@
-@import "tailwindcss" source(none);
+@import "tailwindcss";
 @source "../src";
 @import "tw-animate-css";
 
@@ -291,7 +291,22 @@
   /* Logo crop utility: show centered mark, zoom to hide transparent padding */
   /* Logo cropping utility removed — using natural <img> rendering now */
 
+  /* Mobile logo size tweak */
+  .earnfree-logo[data-logo-size="md"] {
+    width: 490px;
+  }
+
+/* Mobile logo */
+
+@media (max-width: 768px) {
+  .earnfree-logo {
+    width: 150px !important;
+    height: 110px !important;
+  }
+}
+
   /* Section rhythm — generous luxury whitespace */
+
   .section {
     padding-top: clamp(5rem, 10vw, 9rem);
     padding-bottom: clamp(5rem, 10vw, 9rem);
@@ -551,5 +566,149 @@
     right: -15%;
     animation: train-travel 32s linear infinite;
     animation-delay: 8s;
+  }
+}
+
+/* =======================================================
+   VIDEO STYLE HERO SLIDER
+======================================================= */
+
+.hero-slider-bg {
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+.hero-card {
+  transition:
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.8s ease,
+    filter 0.8s ease;
+}
+
+.hero-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow:
+    0 35px 70px rgba(0, 0, 0, 0.35),
+    0 15px 30px rgba(244, 163, 0, 0.2);
+}
+
+.hero-card img {
+  transition: transform 0.8s ease;
+}
+
+.hero-card:hover img {
+  transform: scale(1.08);
+}
+
+.hero-search {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.hero-search input {
+  color: white;
+}
+
+.hero-search input::placeholder {
+  color: rgba(255,255,255,.6);
+}
+
+.hero-search-dropdown {
+  animation: dropdownReveal 0.35s ease forwards;
+  transform-origin: top center;
+}
+
+@keyframes dropdownReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-dot {
+  transition:
+    width 0.45s ease,
+    background-color 0.45s ease,
+    opacity 0.45s ease;
+}
+
+.hero-dot-active {
+  background: linear-gradient(
+    90deg,
+    #f4a300,
+    #ffea00
+  );
+}
+
+@keyframes heroGlow {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  50% {
+    transform: translate(30px, -25px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+.hero-glow {
+  animation: heroGlow 12s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.scroll-indicator {
+  animation: scrollBounce 1.8s infinite;
+}
+
+.hero-title {
+  text-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.hero-subtitle {
+  text-shadow:
+    0 6px 18px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 1024px) {
+  .hero-mobile-title {
+    font-size: clamp(3rem, 9vw, 5rem);
+  }
+
+  .hero-mobile-description {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-search {
+    width: 100%;
+  }
+
+  .hero-card {
+    display: none;
   }
 }

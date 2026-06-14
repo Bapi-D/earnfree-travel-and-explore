@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { Menu, X, User, UserCircle, LayoutDashboard, LogOut } from "lucide-react";
+import { Menu, X, User, UserCircle, LayoutDashboard, LogOut, Search } from "lucide-react";
+
+import { motion, AnimatePresence } from "framer-motion";
+
 
 import {
   DropdownMenu,
@@ -31,16 +34,10 @@ export function Navbar() {
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [showPlane, setShowPlane] = useState(false);
+  const [crossHoverTick, setCrossHoverTick] = useState(0);
 
-  const {
-    user,
-    initials,
-    fullName,
-    isAdmin,
-    isStaff,
-    signOut,
-    openAuthModal,
-  } = useAuth();
+
+  const { user, initials, fullName, isAdmin, isStaff, signOut, openAuthModal } = useAuth();
 
   const navigate = useNavigate();
 
@@ -125,15 +122,9 @@ export function Navbar() {
         </div>
       )}
 
-      {/* GLASS BACKGROUND */}
-      <div className="absolute inset-0 flex items-start justify-center pointer-events-none top-3 md:top-4">
-        <div
-          className={`h-22 md:h-22 w-[calc(100%-1.5rem)] md:w-[calc(100%-4rem)] transition-all duration-500 ${
-            scrolled
-              ? "rounded-[1.5rem] bg-white/60 backdrop-blur-xl shadow-soft border border-white/60"
-              : "bg-transparent"
-          }`}
-        />
+      {/* WHITE BACKGROUND PANEL behind nav links/logo/CTA */}
+      <div className="absolute inset-x-0 -top-4 z-0 pointer-events-none">
+        <div className="h-24 md:h-24 w-full bg-white" />
       </div>
 
       {/* MAIN NAVBAR */}
@@ -142,13 +133,21 @@ export function Navbar() {
         <Link
           to="/"
           disabled={isAnimating}
-          className={`flex items-center gap-2 overflow-hidden -mt-31 lg:-mt-36 -ml-8 lg:-ml-10 md:-ml-12`}
+          className="flex items-center gap-2 overflow-visible -mt-6 lg:-mt-47 -ml-2 lg:-ml-4 md:-ml-6"
         >
-          <Logo size="md" />
+          <div className="hidden lg:contents">
+            <Logo size="lg" />
+          </div>
+          <div className="contents lg:hidden">
+            <div className="transform scale-[2.35] origin-left translate-y-3">
+              <Logo size="md" />
+            </div>
+          </div>
+
         </Link>
 
         {/* DESKTOP NAV */}
-        <nav className="hidden lg:flex absolute left-1/2 top-12 -translate-x-1/2 items-center gap-8 z-20">
+        <nav className="hidden lg:flex absolute left-1/2 top-6 -translate-x-[72%] items-center gap-8 z-20 -ml-4">
           {links.map((l) => (
             <Link
               key={l.label}
@@ -156,7 +155,7 @@ export function Navbar() {
               onClick={() => setOpen(false)}
               className={`
                 text-[17px]
-                font-bold
+                font-semithin
                 tracking-wide
                 transition-all
                 duration-300
@@ -167,11 +166,7 @@ export function Navbar() {
                 cursor-pointer
                 inline-flex
                 items-center
-                ${
-                  scrolled
-                    ? "text-foreground"
-                    : "text-black"
-                }
+                ${scrolled ? "text-foreground" : "text-black"}
               `}
             >
               {l.label}
@@ -180,27 +175,72 @@ export function Navbar() {
         </nav>
 
         {/* RIGHT SIDE */}
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-8 -mt-4 -ml-14">
+          {/* Call Us */}
+          <div className="-ml-8 flex items-center gap-3">
+            <a
+              href="tel:+917005630063"
+              className="inline-flex items-center gap-2 rounded-full"
+              aria-label="Call Us"
+            >
+              <span className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl shadow-soft border border-white/30">
+                {/* corner edge shadow */}
+                <span className="absolute -right-1 -bottom-1 h-6 w-6 rounded-full bg-black/20 blur-md" />
+                <span className="relative">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="black"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-5 w-5"
+                  >
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.08 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.34 1.77.64 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.48-1.48a2 2 0 0 1 2.11-.45c.84.3 1.71.52 2.61.64A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                </span>
+              </span>
+              <span className="text-black font-semibold text-base">Call Us</span>
+            </a>
+            <a
+              href="tel:+917005630063"
+              className="inline-flex items-center gap-2 text-black font-semibold hover:opacity-90"
+              aria-label="Call +917005630063"
+            >
+              +917005630063
+            </a>
+          </div>
+
+          {/* Search button (opens /search) */}
+          <Link
+            to="/search"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-b from-[#FFEA00] to-[#F4A300] text-white shadow-elegant transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(244,163,0,0.35)]"
+            aria-label="Search"
+          >
+            {/* corner edge shadow */}
+            <span
+              className="absolute -right-1 -bottom-1 h-6 w-6 rounded-full bg-black/20 blur-md"
+              aria-hidden="true"
+            />
+            <Search className="relative h-5 w-5" />
+          </Link>
+
           {/* USER MENU */}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
                   disabled={isAnimating}
-                  className="ml-1 h-10 w-10 rounded-full bg-gradient-to-br from-primary to-gold text-white font-bold text-sm shadow-elegant hover:scale-105 transition-transform flex items-center justify-center ring-2 ring-white/40 mt-0 lg:mt-4"
+                  className="ml-1 h-10 w-10 rounded-full bg-gradient-to-br from-primary to-gold text-white font-bold text-sm shadow-elegant hover:scale-105 transition-transform flex items-center justify-center ring-2 ring-white/40 mt-0 lg:mt-1"
                 >
                   {initials}
                 </button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent
-                align="end"
-                className="w-56"
-              >
+              <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
-                  <div className="font-semibold truncate">
-                    {fullName || "Traveler"}
-                  </div>
+                  <div className="font-semibold truncate">{fullName || "Traveler"}</div>
 
                   <div className="text-xs text-muted-foreground truncate font-normal">
                     {user.email}
@@ -239,10 +279,7 @@ export function Navbar() {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem
-                  onSelect={() => signOut()}
-                  className="text-destructive"
-                >
+                <DropdownMenuItem onSelect={() => signOut()} className="text-destructive">
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
                 </DropdownMenuItem>
@@ -251,125 +288,141 @@ export function Navbar() {
           ) : (
             <Button
               disabled={isAnimating}
-              onClick={() =>
-                handleAction(() =>
-                  openAuthModal("login")
-                )
-              }
-              className={`bg-charcoal text-white hover:bg-charcoal/90 rounded-full h-10 px-4 text-lg font-bold mt-0 lg:mt-4`} 
+              onClick={() => handleAction(() => openAuthModal("login"))}
+              className={`relative overflow-hidden rounded-full h-10 px-4 text-lg font-bold mt-0 -lg:mt-1 
+              bg-gradient-to-l from-[#D62828] via-[#FF4D4D] to-[#D62828] text-white shadow-soft 
+                hover:shadow-elegant hover:-translate-y-0.5 transition-all duration-300 
+                after:content-[''] after:absolute after:left-0 after:top-0 after:h-full after:w-full after:opacity-0 after:bg-gradient-to-r after:from-white/20 after:to-white/0 after:translate-x-[-100%] hover:after:opacity-100 hover:after:translate-x-[0%] after:transition-transform after:duration-500 
+              `}
             >
-              <User className="h-4 w-4 mr-2" />
+              {/* corner edge shadow */}
+              <span
+                className="absolute -right-1 -bottom-1 h-6 w-6 rounded-full bg-black/20 blur-md"
+                aria-hidden="true"
+              />
+              <User className="relative h-4 w-4 mr-2" />
               Login
             </Button>
           )}
-
-          {/* BOOK BUTTON */}
-          <Button
-            disabled={isAnimating}
-            onClick={() => handleAction(() => navigate({ to: "/contact/page" }))}
-            className={`bg-yellow-400 text-charcoal rounded-full px-5 py-2 h-10 text-lg font-bold shadow-elegant hover:bg-yellow-500 hover:scale-105 transition-all duration-300 mt-0 lg:mt-4`}
-          >
-            Book Now
-          </Button>
         </div>
 
-        {/* MOBILE MENU BUTTON */}
-        {/* MOBILE ACTIONS (visible on small screens) - fixed to viewport top-left */}
-        <div className="fixed right-18 top-10 z-[80] flex items-center gap-2 lg:hidden">
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {open && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md z-[90] lg:hidden"
+              />
+
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{
+                  duration: 0.45,
+                  ease: "easeOut",
+                }}
+                className=" fixed inset-y-0 right-0 h-screen w-full bg-white/10 backdrop-blur-3xl shadow-[0_8px_50px_rgba(0,0,0,0.35)] z-[100] lg:hidden overflow-hidden" 
+              >
+                <div className="flex h-full flex-col">
+                  <div className="scale-[2.35] origin-left -px-8 -pt-12">
+                    <Logo size="lg" />
+                  </div>
+
+                  <div className="flex flex-col mt-10 px-8">
+                    {links.map((l, index) => (
+                    <motion.div
+                      key={l.label}
+                      initial={{ opacity: 0, x: 40 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: index * 0.08,
+                      }}
+                    >
+                        <Link
+                          to={l.href}
+                          onClick={() => setOpen(false)}
+                          className="block py-5 text-3xl font-bold text-white border-b border-white/10 hover:text-yellow-400 transition-colors"
+                        >
+                          {l.label}
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Mobile Login at bottom of drawer */}
+                  <div className="mt-auto px-8 pb-10">
+                    {user ? null : (
+                      <Button
+                        disabled={isAnimating}
+                        onClick={() => handleAction(() => openAuthModal("login"))}
+                        className="w-full justify-center relative overflow-hidden rounded-2xl h-12 text-lg font-bold bg-white/95 text-black shadow-soft mt-3"
+                      >
+                        <span className="relative inline-flex items-center gap-2">
+                          <User className="h-5 w-5" />
+                          Login
+                        </span>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+
+        {/* Mobile Buttons */}
+        <div className="fixed right-4 top-6 z-[110] flex items-center gap-2 lg:hidden">
           {user ? (
             <button
               disabled={isAnimating}
               onClick={() => handleAction(() => navigate({ to: "/profile" }))}
-              className="ml-1 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-gold text-white font-bold text-sm shadow-elegant hover:scale-105 transition-transform flex items-center justify-center z-50"
+              className="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-gold text-white font-bold text-sm shadow-elegant hover:scale-105 transition-transform flex items-center justify-center"
             >
               {initials}
             </button>
           ) : null}
 
           <button
-            className={`ml-0 h-9 w-9 rounded-md p-2 flex items-center justify-center bg-white/95 shadow-md ring-1 ring-black/5 transition-all duration-300 ${
-              scrolled ? "text-foreground" : "text-black"
-            } font-bold z-50`}
-            onClick={() => !isAnimating && setOpen(!open)}
-            aria-label="Toggle menu"
+            onClick={() => setOpen(!open)}
+            onMouseEnter={() => {
+              if (open) {
+                // retrigger animation once per hover over the close (cross)
+                setCrossHoverTick((v) => v + 1);
+              }
+            }}
+            className="relative h-10 w-10 rounded-lg bg-white shadow-lg flex items-center justify-center"
+            aria-label="Toggle Menu"
           >
-            {open ? <X className="h-6 w-6" strokeWidth={2.8} /> : <Menu className="h-6 w-6" strokeWidth={2.8} />}
+            {/* Animated hamburger -> cross (mobile only) */}
+            <span className="sr-only">Toggle Menu</span>
+            <span
+              className="absolute inset-0 rounded-lg bg-white transition-all duration-300"
+              aria-hidden="true"
+            />
+
+            <span className="relative h-6 w-6">
+              <span
+                key={`line1-${crossHoverTick}`}
+                className={`absolute left-0 top-1/2 w-full h-[2px] bg-black rounded-full origin-center transition-all duration-300 ease-out ${
+                  open ? "rotate-45" : "rotate-0 translate-y-[-6px]"
+                }`}
+              />
+              <span
+                key={`line2-${crossHoverTick}`}
+                className={`absolute left-0 top-1/2 w-full h-[2px] bg-black rounded-full origin-center transition-all duration-300 ease-out ${
+                  open ? "-rotate-45" : "rotate-0 translate-y-[6px]"
+                }`}
+              />
+            </span>
           </button>
         </div>
       </div>
-
-      {/* MOBILE DROPDOWN */}
-      {open && (
-        <div className="lg:hidden fixed inset-x-0 top-20 z-[60] bg-white/95 backdrop-blur-xl border-t border-border px-4 py-4 space-y-2 shadow-2xl rounded-b-3xl">
-          {links.map((l) => (
-            <Link
-              key={l.label}
-              to={l.href}
-              onClick={() => setOpen(false)}
-              className={`
-                block
-                w-full
-                text-left
-                py-3
-                text-lg
-                font-bold
-                transition-all
-                duration-300
-                hover:text-primary
-                hover:translate-x-2
-                border-none
-                bg-transparent
-                ${
-                  scrolled
-                    ? "text-foreground"
-                    : "text-black"
-                }
-              `}
-            >
-              {l.label}
-            </Link>
-          ))}
-
-          <div className="flex gap-2 pt-3">
-            {user ? (
-              <>
-                <Button
-                  variant="outline"
-                  onClick={() => handleAction(() => navigate({ to: "/profile" }))}
-                  className="flex-1 rounded-full"
-                >
-                  <UserCircle className="h-4 w-4 mr-2" />
-                  Profile
-                </Button>
-                <Button onClick={() => signOut()} className="flex-1 bg-charcoal rounded-full">
-                  Logout ({initials})
-                </Button>
-              </>
-            ) : (
-              <Button
-                disabled={isAnimating}
-                onClick={() =>
-                  handleAction(() =>
-                    openAuthModal("login")
-                  )
-                }
-                className="flex-1 bg-primary"
-              >
-                Login / Sign up
-              </Button>
-            )}
-          </div>
-
-          <div className="pt-3">
-            <Button
-              onClick={() => handleAction(() => navigate({ to: "/contact/page" }))}
-              className="w-full bg-yellow-400 text-charcoal rounded-full"
-            >
-              Book Now
-            </Button>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

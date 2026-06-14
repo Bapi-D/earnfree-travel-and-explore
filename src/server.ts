@@ -324,12 +324,45 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   return brandedErrorResponse();
 }
 
+async function requireAdmin(request: Request): Promise<boolean> {
+  const adminKey = process.env.ADMIN_API_KEY || '';
+  const provided = request.headers.get('x-admin-key') || '';
+
+  if (adminKey && provided === adminKey) return true;
+
+  const authorization = request.headers.get('authorization') || '';
+  const token = authorization.toLowerCase().startsWith('bearer ') ? authorization.slice(7).trim() : '';
+  if (!token) return false;
+
+  const admin = await initFirebaseAdmin();
+  if (!admin) return false;
+
+  const decoded = await admin.auth().verifyIdToken(token);
+  if ((decoded as any).role === 'admin') return true;
+
+  if (decoded.uid) {
+    const roleDoc = await admin.firestore().collection('user_roles').doc(decoded.uid).get();
+    return roleDoc.exists && roleDoc.data()?.role === 'admin';
+  }
+
+  return false;
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const url = new URL(request.url);
 
       if (url.pathname === '/__admin/profiles') {
+        let authorized = false;
+        try {
+          authorized = await requireAdmin(request);
+        } catch {
+          authorized = false;
+        }
+        if (!authorized) {
+          return new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'content-type': 'application/json' } });
+        }
         const devAdminUrl = process.env.DEV_ADMIN_URL || '';
         let bodyText: string | undefined = undefined;
         try {
@@ -431,7 +464,18 @@ export default {
 
       // Protected admin API for programmatic user creation.
       if (url.pathname === '/__admin/enquiries') {
+        let authorized = false;
+        try {
+          authorized = await requireAdmin(request);
+        } catch {
+          authorized = false;
+        }
+        if (!authorized) {
+          return new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'content-type': 'application/json' } });
+        }
+
         const devAdminUrl = process.env.DEV_ADMIN_URL || '';
+
         let bodyText: string | undefined = undefined;
         try {
           bodyText = await request.text();
@@ -788,9 +832,18 @@ export default {
 
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      const normalized = await normalizeCatastrophicSsrResponse(response);
+      return normalized;
     } catch (error) {
-      console.error(error);
+      console.error("[SSR fatal]", error);
+      // Helpful: print any React element type mismatch with extra inspection.
+      try {
+        const anyErr = error as any;
+        console.error("[SSR fatal] name:", anyErr?.name, " message:", anyErr?.message, " type:", typeof anyErr);
+        console.error("[SSR fatal] stack:\n", anyErr?.stack);
+      } catch {
+        // ignore
+      }
       return brandedErrorResponse();
     }
   },

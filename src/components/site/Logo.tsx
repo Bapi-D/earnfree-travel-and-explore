@@ -11,14 +11,19 @@ export function Logo({ size = "md" }: LogoProps) {
     lg: { h: 382, w: 470 },
   }[size];
 
-  const style: Record<string, any> = {
-    height: `${dims.h}px`,
-    width: `${dims.w}px`,
-  };
-
   return (
-    <div className="overflow-hidden" style={style}>
-      <img src={logo} alt="Earnfree Travel & Explore" className="h-full w-auto object-contain" />
+    <div
+      className="overflow-hidden earnfree-logo"
+      style={{
+        height: `${dims.h}px`,
+        width: `${dims.w}px`,
+      }}
+    >
+      <img
+        src={logo}
+        alt="Earnfree Travel & Explore"
+        className="h-full w-auto object-contain"
+      />
     </div>
   );
 }

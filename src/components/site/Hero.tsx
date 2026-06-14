@@ -1,267 +1,392 @@
-import { useState, useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { Plane, Minus, Plus } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "@tanstack/react-router";
-import hero from "@/assets/hero.jpg";
-import bali from "@/assets/pkg-bali.jpg";
-import nepal from "@/assets/pkg-nepal.jpg";
-import thailand from "@/assets/pkg-thailand.jpg";
-import goa from "@/assets/pkg-goa.jpg";
+import { useQuery } from "@tanstack/react-query";
+import { Search, Play, ChevronDown } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
- 
 import { getFirestorePackages } from "@/lib/firebase-data";
+import { heroSlides, AUTO_SLIDE_INTERVAL } from "@/data/heroData";
 
 export function Hero() {
+  const navigate = useNavigate();
+
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [searchValue, setSearchValue] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const currentSlide = heroSlides[activeSlide];
+
   const { data: packages = [] } = useQuery({
     queryKey: ["packages"],
     queryFn: () => getFirestorePackages(),
   });
 
-  const uniqueDestinations = useMemo(
-    () => Array.from(new Set(packages.map((pkg) => pkg.destination))).sort(),
-    [packages],
-  );
+  const destinations = useMemo(() => {
+    return Array.from(
+      new Set(
+        (packages as any[])
+          .map((pkg) => pkg.destination)
+          .filter(Boolean)
+      )
+    );
+  }, [packages]);
 
-  const [destination, setDestination] = useState("Bali");
-  const [travelDate, setTravelDate] = useState<Date | undefined>(undefined);
-  const [days, setDays] = useState(5);
-  const [people, setPeople] = useState(2);
-  const navigate = useNavigate();
+  const filteredDestinations = useMemo(() => {
+    if (!searchValue.trim()) return [];
 
-  const dateLabel = travelDate
-    ? travelDate.toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
-    : "Select date";
+    return destinations
+      .filter((destination) =>
+        destination
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+      )
+      .slice(0, 6);
+  }, [searchValue, destinations]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSlide((prev) =>
+        prev === heroSlides.length - 1 ? 0 : prev + 1
+      );
+    }, AUTO_SLIDE_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const goToSlide = (index: number) => {
+    setActiveSlide(index);
+  };
+
+  const searchDestination = (value?: string) => {
+    const query = (value ?? searchValue).trim();
+    if (!query) return;
+
+    const normalizedQuery = query.toLowerCase();
+    const exists = destinations.some((d) => d.toLowerCase() === normalizedQuery);
+
+    if (!exists) {
+      navigate({
+        to: "/contact/page",
+      });
+      setShowSuggestions(false);
+      return;
+    }
+
+    navigate({
+      to: "/destinations",
+      search: {
+        q: query,
+      } as any,
+    });
+
+    setShowSuggestions(false);
+  };
 
   return (
-    <section className="relative min-h-screen flex items-center pt-32 pb-28 overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-white p-4 md:p-6 lg:p-10">
-        <div className="relative h-full w-full overflow-hidden rounded-[2.5rem]">
+    <section className="relative h-screen min-h-[900px] overflow-hidden">
+
+      {/* BACKGROUND SLIDER */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentSlide.id}
+          initial={{
+            opacity: 0,
+            scale: 1.08,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
+          exit={{
+            opacity: 0,
+            scale: 1.03,
+          }}
+          transition={{
+            duration: 1,
+            ease: "easeInOut",
+          }}
+          className="absolute inset-0"
+        >
           <img
-            src={hero}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            src={currentSlide.image}
+            alt={currentSlide.title}
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-sky-400/40 via-sky-500/25 to-sky-300/15" />
-        </div>
-      </div>
 
-      <div className="container mx-auto px-6 lg:px-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-3xl"
-        >
-          <h1 className="hero-caption mt-15 text-5xl md:text-6xl lg:text-[5.25rem] leading-[0.9] font-extrabold">
-            Explore the World &
-            <br />
-            <span className="italic text-yellow-400">Earn Every</span>
-            <span className="block text-white">Memory</span>
-          </h1>
-          <p className="hero-body mt-14 text-lg md:text-xl max-w-xl font-light leading-relaxed">
-            From the Himalayas to Southeast Asia — your journey starts here.
-          </p>
-          <div className="mt-10 flex items-center gap-4">
-            <Link
-              to="/destinations"
-              className="inline-flex h-16 items-center justify-center rounded-full bg-yellow-400 px-10 text-lg font-semibold text-charcoal shadow-gold transition-colors hover:bg-yellow-500 mt-1"
-            >
-              Explore Trips
-            </Link>
-            <Link
-              to="/about"
-              className="inline-flex h-16 items-center justify-center rounded-full glass-dark text-white border-white/30 hover:bg-white hover:text-charcoal px-8 text-lg font-semibold mt-1"
-            >
-              Our Story
-            </Link>
-          </div>
+          {/* DARK OVERLAY */}
+          <div className="absolute inset-0 bg-black/35" />
+
+          {/* LUXURY GRADIENT */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+
+          {/* EXTRA VIGNETTE */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
         </motion.div>
-        {/* Right-side stacked cards (visual) */}
-        <div className="hidden lg:block absolute right-12 top-44 w-[720px] z-10">
-          <div className="relative w-full h-[560px]">
-            <div
-              className="absolute top-0 left-16 w-[320px] rounded-3xl overflow-hidden shadow-2xl transform -rotate-1 floating-img"
-              style={{ animationDelay: "0s" }}
-            >
-              <img src={bali} alt="Bali" className="w-full h-80 object-cover" />
-            </div>
-            <div
-              className="absolute top-18 left-52 w-[320px] rounded-3xl overflow-hidden shadow-2xl transform rotate-1 floating-img"
-              style={{ animationDelay: "0.12s" }}
-            >
-              <img src={nepal} alt="Manali" className="w-full h-80 object-cover" />
-            </div>
-            <div
-              className="absolute top-36 left-8 w-[320px] rounded-3xl overflow-hidden shadow-2xl transform -rotate-1 floating-img"
-              style={{ animationDelay: "0.24s" }}
-            >
-              <img src={thailand} alt="Maldives" className="w-full h-80 object-cover" />
-            </div>
-            <div
-              className="absolute top-54 left-48 w-[320px] rounded-3xl overflow-hidden shadow-2xl transform rotate-1 floating-img"
-              style={{ animationDelay: "0.36s" }}
-            >
-              <img src={goa} alt="Tokyo" className="w-full h-80 object-cover" />
-            </div>
+      </AnimatePresence>
 
-            <div
-              className="absolute bottom-[-28px] left-1/2 -translate-x-1/2 bg-yellow-400 text-charcoal rounded-full px-4 py-2 shadow-gold floating-img"
-              style={{ animationDelay: "0.18s" }}
-            >
-              5K+ Happy Travelers
-            </div>
-          </div>
-        </div>
+      {/* FLOATING GLOW */}
+      <div className="absolute top-32 left-24 h-72 w-72 rounded-full bg-yellow-400/10 blur-[120px]" />
 
-        {/* Booking module — glass */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-16 max-w-5xl"
-        >
-          <div className="glass-card rounded-3xl overflow-hidden">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const q = destination.trim();
-                if (!q) return;
-                const lower = q.toLowerCase();
-                if (packages.length === 0) {
-                  // If packages haven't loaded yet, open destinations and let that page fetch/handle the query
-                  navigate({ to: `/destinations?q=${encodeURIComponent(q)}` });
-                  return;
-                }
+      <div className="relative z-10 h-full container mx-auto px-6">
 
-                const match = packages.find(
-                  (p) => p.destination.toLowerCase() === lower || p.name.toLowerCase().includes(lower),
-                );
+        <div className="grid lg:grid-cols-2 gap-12 h-full items-center">
 
-                if (match) {
-                  navigate({ to: `/destinations?q=${encodeURIComponent(q)}` });
-                } else {
-                  navigate({ to: `/contact/page?q=${encodeURIComponent(q)}` });
-                }
+          {/* LEFT CONTENT */}
+          <div className="max-w-2xl">
+
+            <motion.div
+              key={`badge-${currentSlide.id}`}
+              initial={{
+                opacity: 0,
+                y: 30,
               }}
-              className="p-6 grid gap-3 md:grid-cols-2 xl:grid-cols-5"
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.5,
+              }}
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-xl px-5 py-2 text-white mb-6"
             >
-              <div className="flex h-16 w-full items-center gap-3 rounded-2xl border border-white/60 bg-white/80 px-5 text-charcoal focus-within:border-primary md:col-span-2 xl:col-span-1">
-                <div className="min-w-0 flex-1">
-                  <label
-                    className="text-xs uppercase tracking-widest text-muted-foreground"
-                    htmlFor="destination"
-                  >
-                    Destination
-                  </label>
-                  <input
-                    id="destination"
-                    list="destination-options"
-                    value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
-                    className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-muted-foreground"
-                    placeholder="Choose or type destination"
-                  />
-                  <datalist id="destination-options">
-                    {uniqueDestinations.map((item) => (
-                      <option key={item} value={item} />
-                    ))}
-                  </datalist>
-                </div>
-              </div>
+              <span className="h-2 w-2 rounded-full bg-yellow-400" />
+              Premium Travel Experiences
+            </motion.div>
 
-              <label className="flex h-16 w-full items-center gap-3 rounded-2xl border border-white/60 bg-white/80 px-5 text-charcoal focus-within:border-primary">
-                <div className="min-w-0 flex-1">
-                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                    When to go
-                  </div>
-                  <input
-                    type="date"
-                    value={travelDate ? travelDate.toISOString().slice(0, 10) : ""}
-                    onChange={(e) =>
-                      setTravelDate(
-                        e.target.value ? new Date(`${e.target.value}T00:00:00`) : undefined,
-                      )
-                    }
-                    className="w-full bg-transparent text-sm font-semibold outline-none [color-scheme:light]"
-                  />
-                </div>
-              </label>
-
-              <div className="flex h-16 items-center justify-between gap-3 rounded-2xl border border-white/60 bg-white/80 px-5 text-charcoal">
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                    Days
-                  </div>
-                  <div className="text-sm font-semibold">{days} Days</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setDays((value) => Math.max(1, value - 1))}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white text-charcoal transition-colors hover:bg-secondary"
-                    aria-label="Decrease days"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setDays((value) => value + 1)}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white text-charcoal transition-colors hover:bg-secondary"
-                    aria-label="Increase days"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex h-16 items-center justify-between gap-3 rounded-2xl border border-white/60 bg-white/80 px-5 text-charcoal">
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                    People
-                  </div>
-                  <div className="text-sm font-semibold">
-                    {people}
-                    {people > 1 ? "" : ""}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPeople((value) => Math.max(1, value - 1))}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white text-charcoal transition-colors hover:bg-secondary"
-                    aria-label="Decrease people"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPeople((value) => value + 1)}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white text-charcoal transition-colors hover:bg-secondary"
-                    aria-label="Increase people"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                size="lg"
-                className="bg-gradient-to-r from-primary to-[oklch(0.62_0.21_30)] rounded-2xl px-10 h-16 font-semibold xl:col-span-1"
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentSlide.title}
+                initial={{
+                  opacity: 0,
+                  y: 80,
+                  filter: "blur(10px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -40,
+                }}
+                transition={{
+                  duration: 0.8,
+                }}
               >
-                Search
-              </Button>
-            </form>
-          </div>
-        </motion.div>
+                <h1 className="text-white text-6xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight">
+                  {currentSlide.title}
+                </h1>
 
-        {/* Search results are handled on the destinations/contact pages */}
+                <h2 className="text-yellow-400 text-2xl md:text-3xl font-semibold mt-4">
+                  {currentSlide.subtitle}
+                </h2>
+
+                <p className="mt-8 text-lg md:text-xl text-white/80 leading-relaxed max-w-xl">
+                  {currentSlide.description}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 40,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.25,
+                duration: 0.6,
+              }}
+              className="flex flex-wrap gap-4 mt-10"
+            >
+              <Link to="/destinations">
+                <Button className="rounded-full h-14 px-8 bg-yellow-400 text-black hover:bg-yellow-300 text-base font-semibold">
+                  Explore Trips
+                </Button>
+              </Link>
+
+              <Link to="/about">
+                <Button
+                  variant="outline"
+                  className="rounded-full h-14 px-8 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20"
+                >
+                  <Play className="mr-2 h-4 w-4" />
+                  Watch Story
+                </Button>
+              </Link>
+            </motion.div>
+                   {/* SEARCH BOX */}
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 40,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.4,
+                duration: 0.6,
+              }}
+              className="mt-10 max-w-2xl relative"
+            >
+              <div className="flex items-center rounded-[40px] bg-white/10 backdrop-blur-2xl border border-white/20 p-2 shadow-2xl">
+
+                <Search className="ml-4 text-white/70 h-5 w-5" />
+
+                <input
+                  type="text"
+                  value={searchValue}
+                  onFocus={() => setShowSuggestions(true)}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      searchDestination();
+                    }
+                  }}
+                  placeholder="Search destinations..."
+                  className="flex-1 bg-transparent px-4 py-3 text-white placeholder:text-white/50 outline-none"
+                />
+
+                <Button
+                  onClick={() => searchDestination()}
+                  className="rounded-full px-6 h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold"
+                >
+                  Search
+                </Button>
+              </div>
+
+              {showSuggestions &&
+                filteredDestinations.length > 0 && (
+                  <div className="absolute left-0 right-0 top-[75px] overflow-hidden rounded-3xl bg-white shadow-2xl z-50">
+                    {filteredDestinations.map(
+                      (destination) => (
+                        <button
+                          key={destination}
+                          onClick={() =>
+                            searchDestination(destination)
+                          }
+                          className="block w-full px-6 py-4 text-left hover:bg-gray-100 transition-colors"
+                        >
+                          {destination}
+                        </button>
+                      )
+                    )}
+                  </div>
+                )}
+            </motion.div>
+
+            {/* PAGINATION */}
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              transition={{
+                delay: 0.6,
+              }}
+              className="flex items-center gap-3 mt-12"
+            >
+              {heroSlides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`transition-all duration-500 rounded-full ${
+                    activeSlide === index
+                      ? "w-12 h-2 bg-yellow-400"
+                      : "w-2 h-2 bg-white/50"
+                  }`}
+                />
+              ))}
+            </motion.div>
+          </div>
+
+          {/* RIGHT SIDE CARD STACK */}
+          <div className="hidden lg:flex justify-end items-center">
+            <div className="relative w-[780px] h-[720px] translate-x-[100px] translate-y-[80px]">
+
+
+              {currentSlide.cards.map((card, index) => (
+                <motion.div
+                  key={`${currentSlide.id}-${card.title}`}
+                  initial={{
+                    opacity: 0,
+                    x: 100,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: index * 140,
+                    scale: 1 - index * 0.08,
+                    rotate: index * 2,
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    ease: "easeOut",
+                  }}
+                  className="absolute top-0"
+                  style={{
+                    zIndex: 20 - index,
+                  }}
+                >
+                  <div className="w-[410px] h-[555px] rounded-[30px] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.4)]">
+
+                    <img
+                      src={card.image}
+                      alt={card.title}
+                      className="w-full h-full object-cover"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t rounded-[30px] from-black/80 via-black/20 to-transparent" />
+
+                    <div className="absolute bottom-6 left-6">
+                      <h3 className="text-white font-bold text-2xl">
+                        {card.title}
+                      </h3>
+
+                      <p className="text-white/70 text-sm mt-1">
+                        Explore Now
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* SCROLL INDICATOR */}
+        <motion.button
+          type="button"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          onClick={() => {
+            document
+              .getElementById("highlights")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-white focus:outline-none"
+        >
+          <span className="text-xs tracking-[4px] uppercase mb-3">Scroll</span>
+
+          <motion.div
+            animate={{ y: [0, 12, 0] }}
+            transition={{ repeat: Infinity, duration: 1.8 }}
+          >
+            <ChevronDown size={22} />
+          </motion.div>
+        </motion.button>
       </div>
     </section>
   );

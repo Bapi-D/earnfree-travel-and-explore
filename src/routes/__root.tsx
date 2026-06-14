@@ -16,7 +16,8 @@ import appCss from "../styles.css?url";
 import { useEffect, useState } from "react";
 import { recordVisit } from "@/lib/firebase-data";
 import CookieConsent from '@/components/site/CookieConsent';
-import Preloader from "@/components/ui/Preloader";
+// Preloader component was missing; avoid hard import to prevent app crash
+// import Preloader from "@/components/ui/Preloader";
 
 
 function NotFoundComponent() {
@@ -114,6 +115,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Sora:wght@300;400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap",
       },
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
@@ -145,6 +147,18 @@ function RootComponent() {
 
   useEffect(() => {
     setMounted(true);
+
+    function getCookie(name: string) {
+      const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+      return m ? decodeURIComponent(m[2]) : null;
+    }
+
+    function setCookie(name: string, value: string, days = 365) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      const secure = location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = `${name}=${encodeURIComponent(value)}; Expires=${expires}; Path=/; SameSite=Lax${secure}`;
+    }
+
     try {
       const key = "earnfree-preloader-seen";
       if (!window.sessionStorage.getItem(key)) {
@@ -154,24 +168,17 @@ function RootComponent() {
     } catch {
       setShowPreloader(true);
     }
+
     // record a simple visit event for analytics (once per session per path)
     try {
       const path = window.location.pathname + window.location.search;
       const visitKey = `earnfree-visit-sent:${path}`;
-      const returningKey = 'earnfree-returning';
-      const visitorKey = 'earnfree-visitor-id';
+      const returningKey = "earnfree-returning";
+      const visitorKey = "earnfree-visitor-id";
 
-      function getCookie(name: string) {
-        const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return m ? decodeURIComponent(m[2]) : null;
-      }
-      function setCookie(name: string, value: string, days = 365) {
-        const expires = new Date(Date.now() + days * 864e5).toUTCString();
-        const secure = location.protocol === 'https:' ? '; Secure' : '';
-        document.cookie = `${name}=${encodeURIComponent(value)}; Expires=${expires}; Path=/; SameSite=Lax${secure}`;
-      }
+      let visitorId =
+        getCookie(visitorKey) || window.localStorage.getItem(visitorKey);
 
-      let visitorId = getCookie(visitorKey) || window.localStorage.getItem(visitorKey);
       if (!visitorId) {
         visitorId = `v_${Math.random().toString(36).slice(2, 10)}_${Date.now().toString(36)}`;
         try {
@@ -183,50 +190,76 @@ function RootComponent() {
       } else {
         // ensure cookie is present if only localStorage exists
         if (!getCookie(visitorKey)) {
-          try { setCookie(visitorKey, visitorId, 365); } catch {}
+          try {
+            setCookie(visitorKey, visitorId, 365);
+          } catch {}
         }
       }
 
       const already = window.sessionStorage.getItem(visitKey);
       const returning = Boolean(window.localStorage.getItem(returningKey));
-      const consent = getCookie('earnfree_analytics_consent');
-      if (consent === 'true') {
-        if (!already) {
-          window.sessionStorage.setItem(visitKey, '1');
-          recordVisit({ path, userAgent: navigator.userAgent, device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop', returning, visitor_id: visitorId });
-        }
+      const consent = getCookie("earnfree_analytics_consent");
+
+      if (consent === "true" && !already) {
+        window.sessionStorage.setItem(visitKey, "1");
+          recordVisit({
+            path,
+            userAgent: navigator.userAgent,
+            device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+              ? "mobile"
+              : "desktop",
+            returning,
+            visitor_id: visitorId,
+          });
       }
-      if (!returning) window.localStorage.setItem(returningKey, '1');
+
+      if (!returning) window.localStorage.setItem(returningKey, "1");
 
       // register service worker for performance improvements (caching)
       try {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
         }
       } catch {}
-    } catch (err) {
+    } catch {
       // ignore
     }
 
     function onConsentChange() {
       try {
-        const consent = getCookie('earnfree_analytics_consent');
-        if (consent === 'true') {
-          const path = window.location.pathname + window.location.search;
-          const visitKey = `earnfree-visit-sent:${path}`;
-          const already = window.sessionStorage.getItem(visitKey);
-          const visitorId = getCookie('earnfree-visitor-id') || window.localStorage.getItem('earnfree-visitor-id');
-          const returning = Boolean(window.localStorage.getItem('earnfree-returning'));
-          if (!already) {
-            window.sessionStorage.setItem(visitKey, '1');
-            recordVisit({ path, userAgent: navigator.userAgent, device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop', returning, visitor_id: visitorId });
-          }
+        const consent = getCookie("earnfree_analytics_consent");
+        if (consent !== "true") return;
+
+        const path = window.location.pathname + window.location.search;
+        const visitKey = `earnfree-visit-sent:${path}`;
+        const already = window.sessionStorage.getItem(visitKey);
+
+        const visitorId =
+          getCookie("earnfree-visitor-id") ||
+          window.localStorage.getItem("earnfree-visitor-id");
+
+        const returning = Boolean(
+          window.localStorage.getItem("earnfree-returning")
+        );
+
+        if (!already && visitorId) {
+          window.sessionStorage.setItem(visitKey, "1");
+          recordVisit({
+            path,
+            userAgent: navigator.userAgent,
+            device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+              ? "mobile"
+              : "desktop",
+            returning,
+            visitor_id: visitorId,
+          });
         }
       } catch {}
     }
 
-    window.addEventListener('earnfree-consent-changed', onConsentChange);
-    return () => window.removeEventListener('earnfree-consent-changed', onConsentChange);
+    window.addEventListener("earnfree-consent-changed", onConsentChange);
+    return () =>
+      window.removeEventListener("earnfree-consent-changed", onConsentChange);
   }, []);
 
   return (
@@ -241,17 +274,15 @@ function RootComponent() {
         <AuthModal />
         <Toaster richColors position="top-right" />
 
-        {mounted && showPreloader ? (
+        {false && mounted && showPreloader ? (
           <div
             className={`fixed inset-0 z-[9999999] transition-opacity duration-500 ${fadeOut ? "opacity-0" : "opacity-100"}`}
             aria-hidden
           >
-            <Preloader
-              onFinish={() => {
-                setFadeOut(true);
-                window.setTimeout(() => setShowPreloader(false), 520);
-              }}
-            />
+            {/* Fallback preloader UI (logic preserved) */}
+            <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
+              <div className="h-10 w-10 rounded-full border-2 border-border border-t-primary animate-spin" />
+            </div>
           </div>
         ) : null}
         <CookieConsent />

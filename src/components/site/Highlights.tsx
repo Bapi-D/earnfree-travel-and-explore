@@ -6,7 +6,10 @@ import {
   Headphones,
 } from "lucide-react";
 
-import CountUp from "react-countup";
+import * as CountUpModule from "react-countup";
+
+const CountUp = (CountUpModule as any).default ?? (CountUpModule as any);
+
 
 const items = [
   {
@@ -37,7 +40,7 @@ const items = [
 
 export function Highlights() {
   return (
-    <section className="py-24 bg-background relative overflow-hidden">
+    <section id="highlights" className="py-24 bg-background relative overflow-hidden">
 
       {/* BACKGROUND GLOW */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-[#D0232C]/10 blur-3xl rounded-full" />
