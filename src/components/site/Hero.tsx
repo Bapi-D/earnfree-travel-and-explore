@@ -204,7 +204,7 @@ export function Hero() {
                 delay: 0.25,
                 duration: 0.6,
               }}
-              className="flex flex-wrap gap-4 mt-10"
+              className="grid grid-cols-2 gap-4 mt-10"
             >
               <Link to="/destinations">
                 <Button className="rounded-full h-14 px-8 bg-yellow-400 text-black hover:bg-yellow-300 text-base font-semibold">
@@ -212,10 +212,10 @@ export function Hero() {
                 </Button>
               </Link>
 
-              <Link to="/about">
+              <Link to="/about" className="inline-flex">
                 <Button
                   variant="outline"
-                  className="rounded-full h-14 px-8 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20"
+                  className="rounded-full h-14 px-8 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 flex items-center justify-center"
                 >
                   <Play className="mr-2 h-4 w-4" />
                   Watch Story
@@ -238,7 +238,7 @@ export function Hero() {
               }}
               className="mt-10 max-w-2xl relative"
             >
-              <div className="flex items-center rounded-[40px] bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 p-2 shadow-2xl w-full max-w-full overflow-hidden">
+              <div className="flex items-center rounded-[40px] bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 p-2 shadow-2xl w-full max-w-full overflow-hidden min-w-0">
 
                 <Search className="ml-4 text-charcoal/60 lg:text-white/70 h-5 w-5" />
 
@@ -256,12 +256,12 @@ export function Hero() {
                     }
                   }}
                   placeholder="Search destinations..."
-                  className="flex-1 bg-transparent px-4 py-3 text-charcoal lg:text-white placeholder:text-charcoal/40 lg:placeholder:text-white/50 outline-none"
+                  className="flex-1 min-w-0 bg-transparent -px-6 -py-4 text-charcoal lg:text-white placeholder:text-charcoal/40 lg:placeholder:text-white/50 outline-none"
                 />
 
                 <Button
                   onClick={() => searchDestination()}
-                  className="rounded-full px-6 h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold"
+                  className="rounded-full h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold sm:px-4 px-6"
                 >
                   Search
                 </Button>
