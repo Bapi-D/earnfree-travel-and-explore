@@ -204,20 +204,20 @@ export function Hero() {
                 delay: 0.25,
                 duration: 0.6,
               }}
-              className="flex flex-wrap gap-4 mt-10 "
+              className="flex flex-wrap gap-3 sm:gap-4 mt-10"
             >
               <Link to="/destinations">
-                <Button className="rounded-full h-14 px-8 sm:px-8 px-5 bg-yellow-400 text-black hover:bg-yellow-300 text-base font-semibold">
+                <Button className="rounded-full h-12 sm:h-14 px-5 sm:px-8 bg-yellow-400 text-black hover:bg-yellow-300 text-sm sm:text-base font-semibold">
                   Explore Trips
                 </Button>
               </Link>
 
-              <Link to="/about" className="inline-flex">
+              <Link to="/about">
                 <Button
                   variant="outline"
-                  className="rounded-full h-14 px-8 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 flex items-center justify-center"
+                  className="rounded-full h-12 sm:h-14 px-5 sm:px-8 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 text-sm sm:text-base"
                 >
-                  <Play className="mr-2 h-4 w-4" />
+                  <Play className="mr-2 h-4 w-4 shrink-0" />
                   Watch Story
                 </Button>
               </Link>
@@ -236,13 +236,11 @@ export function Hero() {
                 delay: 0.4,
                 duration: 0.6,
               }}
-              className="mt-10 max-w-2xl relative"
+              className="mt-8 sm:mt-10 w-full max-w-xl relative"
             >
-              <div className="flex items-center rounded-[40px] bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 p-2 shadow-2xl w-full max-w-full overflow-hidden min-w-0 px-0">
+              <div className="flex items-center rounded-full bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 shadow-2xl w-full overflow-hidden">
 
-
-
-                <Search className="ml-6 text-charcoal/60 lg:text-white/70 h-5 w-5" />
+                <Search className="ml-3 sm:ml-4 shrink-0 text-charcoal/60 lg:text-white/70 h-4 w-4 sm:h-5 sm:w-5" />
 
                 <input
                   type="text"
@@ -258,14 +256,13 @@ export function Hero() {
                     }
                   }}
                   placeholder="Search destinations..."
-                  className="flex-1 min-w-0 bg-transparent -px-6 -py-4 text-charcoal lg:text-white placeholder:text-charcoal/40 lg:placeholder:text-white/50 outline-none"
+                  className="flex-1 min-w-0 bg-transparent pl-2 sm:pl-3 pr-2 py-3 sm:py-3.5 text-sm sm:text-base text-charcoal lg:text-white placeholder:text-charcoal/40 lg:placeholder:text-white/50 outline-none"
                 />
 
                 <Button
                   onClick={() => searchDestination()}
-                  className="rounded-full h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold sm:px-4 px-2 mr-3"
+                  className="shrink-0 rounded-full m-1.5 px-3.5 sm:px-6 h-9 sm:h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-xs sm:text-base"
                 >
-
                   Search
                 </Button>
               </div>
@@ -292,7 +289,7 @@ export function Hero() {
 
             {/* MOBILE/TABLET CATEGORY CIRCLES (matches screenshot reference, desktop untouched) */}
             <div
-              className="lg:hidden mt-8 -mx-6 px-9 pt-2 pb-1 overflow-x-auto"
+              className="lg:hidden mt-8 -mx-6 px-6 pt-2 pb-1 overflow-x-auto"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               <style>{`
