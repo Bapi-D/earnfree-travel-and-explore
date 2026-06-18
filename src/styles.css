@@ -296,6 +296,15 @@
     width: 490px;
   }
 
+/* Tablet / Laptop logo sizing */
+@media (min-width: 769px) {
+  .earnfree-logo {
+    width: 300px !important;
+    height: 135px !important;
+  }
+}
+
+
 /* Mobile logo */
 
 @media (max-width: 768px) {
@@ -304,6 +313,7 @@
     height: 110px !important;
   }
 }
+
 
   /* Section rhythm — generous luxury whitespace */
 

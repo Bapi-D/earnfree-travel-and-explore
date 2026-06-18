@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/components/site/Navbar";
 import { Hero } from "@/components/site/Hero";
-import { Highlights } from "@/components/site/Highlights";
 import { MostDemanded } from "@/components/site/MostDemanded";
 
 import { PopularPackages } from "@/components/site/PopularPackages";
@@ -12,6 +11,7 @@ import { Gallery } from "@/components/site/Gallery";
 import { Testimonials } from "@/components/site/Testimonials";
 import { Footer } from "@/components/site/Footer";
 import { FloatingActions } from "@/components/site/FloatingActions";
+import { MobileBottomNav } from "@/components/site/MobileBottomNav";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,11 +34,10 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 lg:pb-0">
       <Navbar />
       <main>
         <Hero />
-        <Highlights />
         <MostDemanded />
         <PopularPackages />
 
@@ -50,6 +49,7 @@ function HomePage() {
       </main>
       <Footer />
       <FloatingActions />
+      <MobileBottomNav />
     </div>
   );
 }

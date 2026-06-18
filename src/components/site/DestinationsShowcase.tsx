@@ -2,13 +2,11 @@ import { motion } from "framer-motion";
 import { ArrowRight, Clock3, MapPinned, Star, Sparkles, Globe2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getFirestorePackages } from "@/lib/firebase-data";
-import { PackageCard } from "./PackageCard";
+import { getFirestorePackages, getFirestoreDestinations, type FirestoreDestinationRow } from "@/lib/firebase-data";
 import { Button } from "@/components/ui/button";
-import { SectionHeader } from "./SectionHeader";
-import { packages } from "@/data/packages";
-import { getFirestoreDestinations, type FirestoreDestinationRow } from "@/lib/firebase-data";
 import { PUBLIC_DESTINATIONS } from "@/data/destinations";
+import { PackageCard } from "./PackageCard";
+
 
 const categoryColor: Record<string, string> = {
   Honeymoon: "bg-pink-500/10 text-pink-700",
@@ -34,7 +32,20 @@ function mapFirestoreDestination(row: FirestoreDestinationRow): DestinationCard 
   };
 }
 
-type DestinationCard = typeof PUBLIC_DESTINATIONS[number];
+type DestinationCard = {
+  name: string;
+  region: string;
+  vibe: string;
+  description: string;
+  image: string;
+  category: string;
+  packageCount: number;
+  minPrice: number;
+  bestSeason: string;
+  duration: string;
+  highlights: string[];
+};
+
 
 export function DestinationsShowcase() {
   const { data: destinationRows = [] } = useQuery({

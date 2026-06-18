@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { Highlights } from "@/components/site/Highlights";
+import { DestinationScroller } from "@/components/site/DestinationScroller";
 import { Search, Play, ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -84,7 +86,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative h-screen min-h-[900px] overflow-hidden">
+    <section className="relative h-auto min-h-[640px] lg:h-screen lg:min-h-[900px] overflow-hidden">
 
       {/* BACKGROUND SLIDER */}
       <AnimatePresence mode="wait">
@@ -128,9 +130,9 @@ export function Hero() {
       {/* FLOATING GLOW */}
       <div className="absolute top-32 left-24 h-72 w-72 rounded-full bg-yellow-400/10 blur-[120px]" />
 
-      <div className="relative z-10 h-full container mx-auto px-6">
+      <div className="relative z-10 h-auto lg:h-full container mx-auto px-6 pt-28 pb-10 lg:pt-0 lg:pb-0">
 
-        <div className="grid lg:grid-cols-2 gap-12 h-full items-center">
+        <div className="grid lg:grid-cols-2 gap-12 h-auto lg:h-full items-center">
 
           {/* LEFT CONTENT */}
           <div className="max-w-2xl">
@@ -236,9 +238,9 @@ export function Hero() {
               }}
               className="mt-10 max-w-2xl relative"
             >
-              <div className="flex items-center rounded-[40px] bg-white/10 backdrop-blur-2xl border border-white/20 p-2 shadow-2xl w-full max-w-full overflow-hidden">
+              <div className="flex items-center rounded-[40px] bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 p-2 shadow-2xl w-full max-w-full overflow-hidden">
 
-                <Search className="ml-4 text-white/70 h-5 w-5" />
+                <Search className="ml-4 text-charcoal/60 lg:text-white/70 h-5 w-5" />
 
                 <input
                   type="text"
@@ -254,7 +256,7 @@ export function Hero() {
                     }
                   }}
                   placeholder="Search destinations..."
-                  className="flex-1 bg-transparent px-4 py-3 text-white placeholder:text-white/50 outline-none"
+                  className="flex-1 bg-transparent px-4 py-3 text-charcoal lg:text-white placeholder:text-charcoal/40 lg:placeholder:text-white/50 outline-none"
                 />
 
                 <Button
@@ -285,6 +287,38 @@ export function Hero() {
                 )}
             </motion.div>
 
+            {/* MOBILE/TABLET CATEGORY CIRCLES (matches screenshot reference, desktop untouched) */}
+            <div
+              className="lg:hidden mt-8 -mx-6 px-9 pt-2 pb-1 overflow-x-auto"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              <style>{`
+                .hero-category-scroll::-webkit-scrollbar {
+                  display: none;
+                }
+              `}</style>
+              <div className="flex items-center gap-5 w-max hero-category-scroll">
+                {heroSlides.map((slide) => (
+                  <Link
+                    key={slide.id}
+                    to="/destinations"
+                    className="flex flex-col items-center gap-2 shrink-0"
+                  >
+                    <span className="block h-16 w-16 rounded-full overflow-hidden ring-2 ring-yellow-400/80 ring-offset-2 ring-offset-transparent">
+                      <img
+                        src={slide.image}
+                        alt={slide.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </span>
+                    <span className="text-white text-xs font-semibold tracking-wide">
+                      {slide.title}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
             {/* PAGINATION */}
             <motion.div
               initial={{
@@ -296,7 +330,7 @@ export function Hero() {
               transition={{
                 delay: 0.6,
               }}
-              className="flex items-center gap-3 mt-12"
+              className="flex items-center gap-3 mt-8 lg:mt-12"
             >
               {heroSlides.map((_, index) => (
                 <button
@@ -312,56 +346,9 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* RIGHT SIDE CARD STACK */}
-          <div className="hidden lg:flex justify-end items-center">
-            <div className="relative w-[780px] h-[720px] translate-x-[100px] translate-y-[80px]">
-
-
-              {currentSlide.cards.map((card, index) => (
-                <motion.div
-                  key={`${currentSlide.id}-${card.title}`}
-                  initial={{
-                    opacity: 0,
-                    x: 100,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: index * 140,
-                    scale: 1 - index * 0.08,
-                    rotate: index * 2,
-                  }}
-                  transition={{
-                    duration: 0.8,
-                    ease: "easeOut",
-                  }}
-                  className="absolute top-0"
-                  style={{
-                    zIndex: 20 - index,
-                  }}
-                >
-                  <div className="w-[410px] h-[555px] rounded-[30px] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.4)]">
-
-                    <img
-                      src={card.image}
-                      alt={card.title}
-                      className="w-full h-full object-cover"
-                    />
-
-                    <div className="absolute inset-0 bg-gradient-to-t rounded-[30px] from-black/80 via-black/20 to-transparent" />
-
-                    <div className="absolute bottom-6 left-6">
-                      <h3 className="text-white font-bold text-2xl">
-                        {card.title}
-                      </h3>
-
-                      <p className="text-white/70 text-sm mt-1">
-                        Explore Now
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+          {/* RIGHT SIDE - DESTINATIONS SCROLLING RAIL */}
+          <div className="hidden lg:flex justify-end items-center h-[60vh] lg:h-[65vh] max-h-[600px]">
+            <DestinationScroller />
           </div>
         </div>
 
@@ -376,7 +363,7 @@ export function Hero() {
               .getElementById("highlights")
               ?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-white focus:outline-none"
+          className="absolute bottom-4 lg:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-white focus:outline-none"
         >
           <span className="text-xs tracking-[4px] uppercase mb-3">Scroll</span>
 
@@ -387,6 +374,16 @@ export function Hero() {
             <ChevronDown size={22} />
           </motion.div>
         </motion.button>
+
+        {/* HIGHLIGHTS (desktop only — overlaid at bottom of hero) */}
+        <div className="hidden lg:block absolute z-[60] left-0 right-0 bottom-[-40px] pb-0">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="bg-transparent">
+             
+              <Highlights />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

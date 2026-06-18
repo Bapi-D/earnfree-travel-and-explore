@@ -3,7 +3,6 @@ import { Menu, X, User, UserCircle, LayoutDashboard, LogOut, Search } from "luci
 
 import { motion, AnimatePresence } from "framer-motion";
 
-
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -35,7 +34,6 @@ export function Navbar() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showPlane, setShowPlane] = useState(false);
   const [crossHoverTick, setCrossHoverTick] = useState(0);
-
 
   const { user, initials, fullName, isAdmin, isStaff, signOut, openAuthModal } = useAuth();
 
@@ -69,7 +67,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 lg:top-4 z-50 transition-all duration-500">
+    <header className="fixed inset-x-0 top-0 z-50 transition-all duration-500">
       {/* PREMIUM PLANE ANIMATION */}
       <style>{`
         @keyframes planeZoomToFace {
@@ -109,6 +107,17 @@ export function Navbar() {
 
           will-change: transform, opacity;
         }
+
+        .navbar-desktop-link {
+          font-size: 16px;
+          line-height: 1.2;
+        }
+
+        @media (max-width: 1279px) {
+          .navbar-desktop-link {
+            font-size: 14px !important;
+          }
+        }
       `}</style>
 
       {/* PLANE OVERLAY */}
@@ -122,62 +131,58 @@ export function Navbar() {
         </div>
       )}
 
-      {/* WHITE BACKGROUND PANEL behind nav links/logo/CTA */}
-      <div className="absolute inset-x-0 -top-4 z-0 pointer-events-none">
-        <div className="h-24 md:h-24 w-full bg-white" />
-      </div>
+      {/* MAIN NAVBAR
+          Mobile/tablet: frosted glass bar that dissolves smoothly into the hero below via one
+          gradient layer (no extra spacer, so no dead gap). Desktop (lg+): solid white, unchanged. */}
+      <div className="relative z-10">
+        {/* Glass + dissolve background layer (mobile/tablet only) */}
+        <div
+          className="lg:hidden absolute inset-0 -bottom-6 bg-gradient-to-b from-white/25 via-white/20 to-transparent backdrop-blur-md h-20"
+          aria-hidden="true"
+        />
+        {/* Solid background (desktop only) */}
+        <div className="hidden lg:block absolute h-25 inset-0 bg-white" aria-hidden="true" />
 
-      {/* MAIN NAVBAR */}
-      <div className="container mx-auto relative z-10 flex justify-between px-4 lg:px-6 items-center lg:items-start py-0 lg:py-7 lg:transform lg:-translate-y-0">
-        {/* LOGO */}
-        <Link
-          to="/"
-          disabled={isAnimating}
-          className="flex items-center gap-2 overflow-visible -mt-6 lg:-mt-47 -ml-2 lg:-ml-4 md:-ml-6"
-        >
-          <div className="hidden lg:contents">
-            <Logo size="lg" />
-          </div>
-          <div className="contents lg:hidden">
-            <div className="transform scale-[2.35] origin-left translate-y-3">
+        <div className="relative container mx-auto flex justify-between px-3 lg:px-6 items-center py-2 h-28">
+          {/* LOGO (single element per breakpoint range, no overlap) */}
+          <Link
+            to="/"
+            disabled={isAnimating}
+            className="flex items-center gap-2 shrink-0"
+          >
+            {/* Mobile only: <768px */}
+            <div className="block md:hidden h-38">
+              <Logo size="sm" />
+            </div>
+
+            {/* Tablet only: 768px–1023px */}
+            <div className="hidden md:block lg:hidden h-38">
               <Logo size="md" />
             </div>
-          </div>
 
-        </Link>
+            {/* Desktop: >=1024px */}
+            <div className="hidden lg:block h-38">
+              <Logo size="lg" />
+            </div>
+          </Link>
 
-        {/* DESKTOP NAV */}
-        <nav className="hidden lg:flex absolute left-1/2 top-6 -translate-x-[72%] items-center gap-8 z-20 -ml-4">
-          {links.map((l) => (
-            <Link
-              key={l.label}
-              to={l.href}
-              onClick={() => setOpen(false)}
-              className={`
-                text-[17px]
-                font-semithin
-                tracking-wide
-                transition-all
-                duration-300
-                hover:text-primary
-                hover:scale-105
-                border-none
-                bg-transparent
-                cursor-pointer
-                inline-flex
-                items-center
-                ${scrolled ? "text-foreground" : "text-black"}
-              `}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* RIGHT SIDE */}
-        <div className="hidden lg:flex items-center gap-8 -mt-4 -ml-14">
-          {/* Call Us */}
-          <div className="-ml-8 flex items-center gap-3">
+          {/* RIGHT SIDE */}
+          <div className="hidden lg:flex items-center gap-3 xl:gap-6 flex-1 justify-end">
+            {/* Nav links - single instance, visible from lg up, gap shrinks on smaller laptops */}
+          <nav className="flex items-center gap-3 lg:gap-4 xl:gap-6 z-20">
+            {links.map((l) => (
+              <Link
+                key={l.label}
+                to={l.href}
+                onClick={() => setOpen(false)}
+                className={`navbar-desktop-link ${scrolled ? "text-foreground" : "text-black"} text-[13px] lg:text-[14px] xl:text-[16px] font-semithin tracking-wide transition-all duration-300 hover:text-primary hover:scale-105 border-none bg-transparent cursor-pointer inline-flex items-center whitespace-nowrap`}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+          {/* Call Us (hidden at <=1280px) */}
+          <div className="hidden xl:flex items-center gap-3">
             <a
               href="tel:+917005630063"
               className="inline-flex items-center gap-2 rounded-full"
@@ -215,6 +220,7 @@ export function Navbar() {
           {/* Search button (opens /search) */}
           <Link
             to="/search"
+            search={{ q: "" }}
             className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-b from-[#FFEA00] to-[#F4A300] text-white shadow-elegant transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(244,163,0,0.35)]"
             aria-label="Search"
           >
@@ -232,7 +238,7 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <button
                   disabled={isAnimating}
-                  className="ml-1 h-10 w-10 rounded-full bg-gradient-to-br from-primary to-gold text-white font-bold text-sm shadow-elegant hover:scale-105 transition-transform flex items-center justify-center ring-2 ring-white/40 mt-0 lg:mt-1"
+                  className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-gold text-white font-bold text-sm shadow-elegant hover:scale-105 transition-transform flex items-center justify-center ring-2 ring-white/40"
                 >
                   {initials}
                 </button>
@@ -289,7 +295,7 @@ export function Navbar() {
             <Button
               disabled={isAnimating}
               onClick={() => handleAction(() => openAuthModal("login"))}
-              className={`relative overflow-hidden rounded-full h-10 px-4 text-lg font-bold mt-0 -lg:mt-1 
+              className={`relative overflow-hidden rounded-full h-10 px-4 text-base font-bold
               bg-gradient-to-l from-[#D62828] via-[#FF4D4D] to-[#D62828] text-white shadow-soft 
                 hover:shadow-elegant hover:-translate-y-0.5 transition-all duration-300 
                 after:content-[''] after:absolute after:left-0 after:top-0 after:h-full after:w-full after:opacity-0 after:bg-gradient-to-r after:from-white/20 after:to-white/0 after:translate-x-[-100%] hover:after:opacity-100 hover:after:translate-x-[0%] after:transition-transform after:duration-500 
@@ -305,9 +311,11 @@ export function Navbar() {
             </Button>
           )}
         </div>
+        </div>
+      </div>
 
-        {/* Mobile menu */}
-        <AnimatePresence>
+      {/* Mobile menu */}
+      <AnimatePresence>
           {open && (
             <>
               <motion.div
@@ -326,27 +334,27 @@ export function Navbar() {
                   duration: 0.45,
                   ease: "easeOut",
                 }}
-                className=" fixed inset-y-0 right-0 h-screen w-full bg-white/10 backdrop-blur-3xl shadow-[0_8px_50px_rgba(0,0,0,0.35)] z-[100] lg:hidden overflow-hidden" 
+                className=" fixed inset-y-0 right-0 h-screen w-full max-w-sm bg-white/10 backdrop-blur-3xl shadow-[0_8px_50px_rgba(0,0,0,0.35)] z-[100] lg:hidden overflow-hidden"
               >
                 <div className="flex h-full flex-col">
-                  <div className="scale-[2.35] origin-left -px-8 -pt-12">
+                  <div className="px-8 pt-8">
                     <Logo size="lg" />
                   </div>
 
-                  <div className="flex flex-col mt-10 px-8">
+                  <div className="flex flex-col mt-6 px-8 overflow-y-auto">
                     {links.map((l, index) => (
-                    <motion.div
-                      key={l.label}
-                      initial={{ opacity: 0, x: 40 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{
-                        delay: index * 0.08,
-                      }}
-                    >
+                      <motion.div
+                        key={l.label}
+                        initial={{ opacity: 0, x: 40 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          delay: index * 0.08,
+                        }}
+                      >
                         <Link
                           to={l.href}
                           onClick={() => setOpen(false)}
-                          className="block py-5 text-3xl font-bold text-white border-b border-white/10 hover:text-yellow-400 transition-colors"
+                          className="block py-5 text-2xl sm:text-3xl font-bold text-white border-b border-white/10 hover:text-yellow-400 transition-colors"
                         >
                           {l.label}
                         </Link>
@@ -354,8 +362,8 @@ export function Navbar() {
                     ))}
                   </div>
 
-                  {/* Mobile Login at bottom of drawer */}
-                  <div className="mt-auto px-8 pb-10">
+                  {/* Mobile Login at bottom of drawer (lifted clear of the fixed bottom nav bar) */}
+                  <div className="mt-auto px-8 pb-28">
                     {user ? null : (
                       <Button
                         disabled={isAnimating}
@@ -375,9 +383,8 @@ export function Navbar() {
           )}
         </AnimatePresence>
 
-
         {/* Mobile Buttons */}
-        <div className="fixed right-4 top-6 z-[110] flex items-center gap-2 lg:hidden">
+        <div className="fixed right-3 top-3 sm:right-4 sm:top-4 z-[110] flex items-center gap-2 lg:hidden">
           {user ? (
             <button
               disabled={isAnimating}
@@ -387,6 +394,26 @@ export function Navbar() {
               {initials}
             </button>
           ) : null}
+
+          {/* Call icon (mobile/tablet header, matches screenshot reference) */}
+          <a
+            href="tel:+917005630063"
+            aria-label="Call us"
+            className="h-10 w-10 rounded-full bg-white shadow-lg flex items-center justify-center text-charcoal"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4.5 w-4.5"
+            >
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.08 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.34 1.77.64 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.48-1.48a2 2 0 0 1 2.11-.45c.84.3 1.71.52 2.61.64A2 2 0 0 1 22 16.92z" />
+            </svg>
+          </a>
 
           <button
             onClick={() => setOpen(!open)}
@@ -422,7 +449,6 @@ export function Navbar() {
             </span>
           </button>
         </div>
-      </div>
     </header>
   );
 }

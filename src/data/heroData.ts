@@ -1,8 +1,9 @@
 import hero from "@/assets/hero.jpg";
 import bali from "@/assets/pkg-bali.jpg";
-import nepal from "@/assets/pkg-nepal.jpg";
-import thailand from "@/assets/pkg-thailand.jpg";
-import goa from "@/assets/pkg-goa.jpg";
+import nepal from "@/assets/pkg-nepal1.jpg";
+import thailand from "@/assets/pkg-thailand1.jpg";
+import goa from "@/assets/pkg-goa1.jpg";
+import andaman from "@/assets/pkg-andaman.jpg";
 
 export interface HeroDestination {
   id: number;
@@ -19,15 +20,15 @@ export interface HeroDestination {
 export const heroSlides: HeroDestination[] = [
   {
     id: 1,
-    title: "BALI",
-    subtitle: "Island of the Gods",
+    title: "ANDAMAN",
+    subtitle: "Ocean Paradise",
     description:
-      "Experience breathtaking beaches, ancient temples, tropical forests, and unforgettable sunsets in one of the world's most loved destinations.",
-    image: bali,
+    "Indulge in serene beachfront stays, stunning sunsets, private island experiences, turquoise waters, and the unmatched beauty of the Andaman Islands.",
+    image: andaman,
     cards: [
       {
-        title: "Ubud",
-        image: bali,
+        title: "Andaman",
+        image: andaman,
       },
       {
         title: "Thailand",
@@ -53,8 +54,8 @@ export const heroSlides: HeroDestination[] = [
         image: thailand,
       },
       {
-        title: "Bali",
-        image: bali,
+        title: "Andaman",
+        image: andaman,
       },
       {
         title: "Goa",

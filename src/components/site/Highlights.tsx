@@ -40,14 +40,9 @@ const items = [
 
 export function Highlights() {
   return (
-    <section id="highlights" className="py-24 bg-background relative overflow-hidden">
+    <section id="highlights" className="hidden lg:block py-6 relative overflow-hidden">
 
-      {/* BACKGROUND GLOW */}
-      <div className="absolute top-0 left-0 w-72 h-72 bg-[#D0232C]/10 blur-3xl rounded-full" />
-
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#D0232C]/10 blur-3xl rounded-full" />
-
-      <div className="container mx-auto px-6 lg:px-10 grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+      <div className="container mx-auto px-6 lg:px-10 grid grid-cols-2 lg:grid-cols-4 gap-x-8 lg:gap-x-12 gap-y-8 relative z-10">
         {items.map((it, i) => {
           const Icon = it.icon;
 
@@ -62,47 +57,53 @@ export function Highlights() {
                 delay: i * 0.08,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="
-                rounded-2xl
-                p-5 md:p-6
-                text-center
-                group
-                hover:-translate-y-2
-                transition-all
-                duration-500
-                border
-                border-white/20
-                bg-white/75
-                backdrop-blur-xl
-                shadow-[0_12px_45px_rgba(0,0,0,0.08)]
-              "
+             className="
+             relative
+             rounded-2xl
+             p-1
+             text-center
+             group
+             hover:-translate-y-2
+             transition-all
+             duration-500
+            "
             >
+              {/* VERTICAL DIVIDER (between items, like JustWravel reference) */}
+              {i !== 0 && (
+                <span
+                  className="hidden lg:block absolute left-[-1.5rem] top-1/2 -translate-y-1/2 h-12 w-px bg-white/15"
+                  aria-hidden="true"
+                />
+              )}
+
               {/* ICON */}
               <div
                 className="
                   inline-flex
-                  h-16
-                  w-16
+                  h-11
+                  w-11
+                  md:h-12
+                  md:w-12
                   items-center
                   justify-center
-                  rounded-2xl
+                  rounded-xl
                   text-white
-                  mb-6
+                  mb-3
                   group-hover:scale-110
                   transition-transform
                   duration-500
-                  shadow-[0_10px_25px_rgba(208,35,44,0.35)]
+                  shadow-[0_8px_18px_rgba(208,35,44,0.35)]
                   bg-gradient-to-br
                   from-[#D0232C]
                   via-[#ff4d57]
                   to-[#ffb199]
                 "
               >
-                <Icon className="h-7 w-7" />
+                <Icon className="h-5 w-5 md:h-5.5 md:w-5.5" />
               </div>
 
               {/* COUNT */}
-              <div className="text-3xl md:text-5xl font-extrabold text-[#D0232C] leading-none">
+              <div className="text-xl md:text-2xl lg:text-3xl font-extrabold text-[#D0232C] leading-none">
                 <CountUp
                   start={0}
                   end={it.value}
@@ -115,12 +116,12 @@ export function Highlights() {
               </div>
 
               {/* LABEL */}
-              <div className="text-xs md:text-sm text-zinc-500 mt-3 tracking-[0.18em] uppercase font-semibold">
+              <div className="text-[10px] md:text-xs text-zinc-400 mt-2 tracking-[0.14em] uppercase font-semibold">
                 {it.label}
               </div>
 
               {/* BOTTOM GLOW LINE */}
-              <div className="mt-5 h-[3px] w-16 mx-auto rounded-full bg-gradient-to-r from-[#D0232C] via-[#ff4d57] to-[#ffb199] opacity-80" />
+              <div className="mt-3 h-[2px] w-10 mx-auto rounded-full bg-gradient-to-r from-[#D0232C] via-[#ff4d57] to-[#ffb199] opacity-80" />
             </motion.div>
           );
         })}

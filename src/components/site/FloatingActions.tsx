@@ -2,7 +2,7 @@ import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
 
 export function FloatingActions() {
   return (
-    <div className="fixed right-4 bottom-4 z-50 flex flex-col gap-3">
+    <div className="hidden lg:flex fixed right-4 bottom-4 z-50 flex-col gap-3">
       {/* WhatsApp Button → Opens Direct Chat Instantly */}
       <a
         href="https://api.whatsapp.com/send?phone=917005630063"
