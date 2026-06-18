@@ -238,7 +238,7 @@ export function Hero() {
               }}
               className="mt-8 sm:mt-10 w-full max-w-xl relative"
             >
-              <div className="flex items-center rounded-full bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 shadow-2xl w-full max-w-[330px] sm:max-w-[420px] mx-auto overflow-hidden">
+              <div className="flex items-center rounded-full bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 shadow-2xl w-full max-w-[330px] sm:max-w-[420px] mx-auto overflow-hidden -translate-x-3 sm:-translate-x-18">
 
                 <Search className="ml-3 sm:ml-4 shrink-0 text-charcoal/60 lg:text-white/70 h-4 w-4 sm:h-5 sm:w-5" />
 
