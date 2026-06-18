@@ -238,9 +238,11 @@ export function Hero() {
               }}
               className="mt-10 max-w-2xl relative"
             >
-              <div className="flex items-center rounded-[40px] bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 p-2 shadow-2xl w-full max-w-full overflow-hidden min-w-0">
+              <div className="flex items-center rounded-[40px] bg-white lg:bg-white/10 backdrop-blur-2xl border border-transparent lg:border-white/20 p-2 shadow-2xl w-full max-w-full overflow-hidden min-w-0 px-0">
 
-                <Search className="ml-4 text-charcoal/60 lg:text-white/70 h-5 w-5" />
+
+
+                <Search className="ml-6 text-charcoal/60 lg:text-white/70 h-5 w-5" />
 
                 <input
                   type="text"
@@ -261,8 +263,9 @@ export function Hero() {
 
                 <Button
                   onClick={() => searchDestination()}
-                  className="rounded-full h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold sm:px-4 px-2"
+                  className="rounded-full h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold sm:px-4 px-2 mr-3"
                 >
+
                   Search
                 </Button>
               </div>
