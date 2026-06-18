@@ -23,7 +23,7 @@ export const heroSlides: HeroDestination[] = [
     title: "ANDAMAN",
     subtitle: "Ocean Paradise",
     description:
-    "Indulge in serene beachfront stays, stunning sunsets, private island experiences, turquoise waters, and the unmatched beauty of the Andaman Islands.",
+    "Indulge in serene beachfront stays, stunning sunsets and the unmatched beauty of the Andaman Islands.",
     image: andaman,
     cards: [
       {

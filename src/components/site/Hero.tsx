@@ -204,10 +204,10 @@ export function Hero() {
                 delay: 0.25,
                 duration: 0.6,
               }}
-              className="grid grid-cols-2 gap-4 mt-10"
+              className="flex flex-wrap gap-4 mt-10 "
             >
               <Link to="/destinations">
-                <Button className="rounded-full h-14 px-8 bg-yellow-400 text-black hover:bg-yellow-300 text-base font-semibold">
+                <Button className="rounded-full h-14 px-8 sm:px-8 px-5 bg-yellow-400 text-black hover:bg-yellow-300 text-base font-semibold">
                   Explore Trips
                 </Button>
               </Link>
@@ -261,7 +261,7 @@ export function Hero() {
 
                 <Button
                   onClick={() => searchDestination()}
-                  className="rounded-full h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold sm:px-4 px-6"
+                  className="rounded-full h-12 bg-yellow-400 text-black hover:bg-yellow-300 font-semibold sm:px-4 px-2"
                 >
                   Search
                 </Button>
