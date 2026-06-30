@@ -86,4 +86,3 @@ export function PackageCard({ pkg, index = 0 }: { pkg: Package; index?: number }
     </Link>
   );
 }
-
