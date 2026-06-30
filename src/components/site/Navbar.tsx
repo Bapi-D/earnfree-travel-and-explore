@@ -27,21 +27,6 @@ const links: { href: string; label: string }[] = [
   { href: "/contact/page", label: "Contact" },
 ];
 
-/* Bottom nav tabs for mobile/tablet */
-const bottomNavItems = [
-  {
-    href: "/destinations",
-    label: "Trips",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="2" y1="12" x2="22" y2="12" />
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-      </svg>
-    ),
-  },
-];
-
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -106,14 +91,14 @@ export function Navbar() {
 
         {/* MAIN NAVBAR */}
         <div className="relative z-10">
-          {/* Mobile/tablet: transparent at top (blue gradient from Hero shows through), solid white once scrolled */}
+          {/* Mobile/tablet: transparent at top, solid white once scrolled */}
           <div
             className={`lg:hidden absolute inset-0 transition-colors duration-300 ${
               scrolled ? "bg-white shadow-sm" : "bg-transparent"
             }`}
             aria-hidden="true"
           />
-          {/* Desktop: solid white */}
+          {/* Desktop: solid white always */}
           <div className="hidden lg:block absolute h-25 inset-0 bg-white" aria-hidden="true" />
 
           <div className="relative container mx-auto flex justify-between px-3 lg:px-6 items-center py-2 h-[60px] lg:h-28">
@@ -222,7 +207,7 @@ export function Navbar() {
               )}
             </div>
 
-            {/* MOBILE RIGHT — Call + Hamburger only (no user avatar cluttering) */}
+            {/* MOBILE RIGHT — Call + Hamburger */}
             <div className="flex lg:hidden items-center gap-2">
               {user && (
                 <button
@@ -234,28 +219,56 @@ export function Navbar() {
                 </button>
               )}
 
-              {/* Call button */}
+              {/* Call button
+                  - At top (blue gradient bg): white circle + blue icon
+                  - After scroll (white navbar): blue circle + white icon
+              */}
               <a
                 href="tel:+917005630063"
                 aria-label="Call us"
-                className="h-10 w-10 rounded-full bg-white shadow-md flex items-center justify-center text-gray-700"
+                className={`h-10 w-10 rounded-full shadow-md flex items-center justify-center transition-colors duration-300 ${
+                  scrolled ? "bg-blue-600 text-white" : "bg-white text-blue-600"
+                }`}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4.5 w-4.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-[18px] w-[18px]"
+                >
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.08 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.34 1.77.64 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.48-1.48a2 2 0 0 1 2.11-.45c.84.3 1.71.52 2.61.64A2 2 0 0 1 22 16.92z" />
                 </svg>
               </a>
 
-              {/* Hamburger */}
+              {/* Hamburger button
+                  - At top (blue gradient bg): white circle + blue lines
+                  - After scroll (white navbar): blue circle + white lines
+              */}
               <button
                 onClick={() => setOpen(!open)}
                 onMouseEnter={() => { if (open) setCrossHoverTick((v) => v + 1); }}
-                className="relative h-10 w-10 rounded-lg bg-white shadow-md flex items-center justify-center"
+                className={`relative h-10 w-10 rounded-full shadow-md flex items-center justify-center transition-colors duration-300 ${
+                  scrolled ? "bg-blue-600" : "bg-white"
+                }`}
                 aria-label="Toggle Menu"
               >
-                <span className="absolute inset-0 rounded-lg bg-white transition-all duration-300" aria-hidden="true" />
-                <span className="relative h-6 w-6">
-                  <span key={`line1-${crossHoverTick}`} className={`absolute left-0 top-1/2 w-full h-[2px] bg-black rounded-full origin-center transition-all duration-300 ease-out ${open ? "rotate-45" : "rotate-0 translate-y-[-6px]"}`} />
-                  <span key={`line2-${crossHoverTick}`} className={`absolute left-0 top-1/2 w-full h-[2px] bg-black rounded-full origin-center transition-all duration-300 ease-out ${open ? "-rotate-45" : "rotate-0 translate-y-[6px]"}`} />
+                <span className="relative h-5 w-5">
+                  <span
+                    key={`line1-${crossHoverTick}`}
+                    className={`absolute left-0 top-1/2 w-full h-[2px] rounded-full origin-center transition-all duration-300 ease-out ${
+                      scrolled ? "bg-white" : "bg-blue-600"
+                    } ${open ? "rotate-45 translate-y-0" : "-translate-y-[5px]"}`}
+                  />
+                  <span
+                    key={`line2-${crossHoverTick}`}
+                    className={`absolute left-0 top-1/2 w-full h-[2px] rounded-full origin-center transition-all duration-300 ease-out ${
+                      scrolled ? "bg-white" : "bg-blue-600"
+                    } ${open ? "-rotate-45 translate-y-0" : "translate-y-[5px]"}`}
+                  />
                 </span>
               </button>
             </div>
@@ -324,7 +337,6 @@ export function Navbar() {
 
       {/* =============================================
           BOTTOM NAV BAR — mobile/tablet only
-          Matches JustWravel: Trips | Explore (center FAB) | Chat
       ============================================= */}
       <nav
         className="lg:hidden fixed bottom-0 inset-x-0 z-[80] bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
@@ -359,8 +371,7 @@ export function Navbar() {
             <span className="text-[10px] font-medium text-gray-600 mt-1">Explore</span>
           </div>
 
-
-          {/* Login/Profile */}
+          {/* Login / Profile */}
           {user ? (
             <button
               onClick={() => navigate({ to: "/profile" })}
