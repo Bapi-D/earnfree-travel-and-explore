@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 const ALL_TRIPS = [
   {
     id: 1,
-    title: "Manali",
+    title: "Hampta Pass Trek",
     image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=600&fit=crop",
     duration: "4N/5D",
     route: "Manali To Manali",
@@ -16,7 +16,7 @@ const ALL_TRIPS = [
   },
   {
     id: 2,
-    title: "Ladakh",
+    title: "Leh to Leh 8D (Hanle-Umling-La)",
     image: "https://images.unsplash.com/photo-1589793907316-f94025b46850?w=600&h=600&fit=crop",
     duration: "7N/8D",
     route: "Leh To Leh",
@@ -27,7 +27,7 @@ const ALL_TRIPS = [
   },
   {
     id: 3,
-    title: "Backpacking Trip | 8 Days",
+    title: "Zanskar Valley Backpacking Trip | 8 Days",
     image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&h=600&fit=crop",
     duration: "7N/8D",
     route: "Delhi To Delhi",
@@ -38,7 +38,7 @@ const ALL_TRIPS = [
   },
   {
     id: 4,
-    title: "Nubra-Turtuk-Hanle | 9 Days",
+    title: "Nubra-Turtuk-Hanle Circuit Tour | 9 Days",
     image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop",
     duration: "8N/9D",
     route: "Leh To Leh",
@@ -70,6 +70,51 @@ const ALL_TRIPS = [
     international: false,
   },
   {
+    id: 13,
+    title: "Goa Beach Holiday | 4 Days",
+    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600&h=600&fit=crop",
+    duration: "3N/4D",
+    route: "Goa To Goa",
+    originalPrice: 14000,
+    price: 11999,
+    months: ["Nov", "Dec", "Jan", "Feb"],
+    international: false,
+  },
+  {
+    id: 14,
+    title: "Rajasthan Royal Heritage Tour | 7 Days",
+    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600&h=600&fit=crop",
+    duration: "6N/7D",
+    route: "Jaipur To Jodhpur",
+    originalPrice: 24000,
+    price: 20999,
+    months: ["Nov", "Dec", "Jan", "Feb", "Mar"],
+    international: false,
+  },
+  {
+    id: 15,
+    title: "Kerala Backwaters & Munnar | 6 Days",
+    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&h=600&fit=crop",
+    duration: "5N/6D",
+    route: "Kochi To Kochi",
+    originalPrice: 20000,
+    price: 17499,
+    months: ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
+    international: false,
+  },
+  {
+    id: 16,
+    title: "Andaman Island Escape | 5 Days",
+    image: "https://images.unsplash.com/photo-1586500036706-41963de24d8b?w=600&h=600&fit=crop",
+    duration: "4N/5D",
+    route: "Port Blair To Port Blair",
+    originalPrice: 32000,
+    price: 27999,
+    months: ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
+    international: false,
+  },
+  // International trips
+  {
     id: 7,
     title: "Bali Beaches & Temples | 6 Days",
     image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&h=600&fit=crop",
@@ -77,7 +122,7 @@ const ALL_TRIPS = [
     route: "Mumbai To Mumbai",
     originalPrice: 55000,
     price: 48999,
-    months: ["Jun", "Jul", "Aug", "Sep", "Oct"],
+    months: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     international: true,
   },
   {
@@ -88,7 +133,7 @@ const ALL_TRIPS = [
     route: "Delhi To Delhi",
     originalPrice: 62000,
     price: 54999,
-    months: ["Jun", "Aug", "Sep", "Oct"],
+    months: ["Jun", "Aug", "Sep", "Oct", "Nov", "Dec"],
     international: true,
   },
   {
@@ -99,7 +144,7 @@ const ALL_TRIPS = [
     route: "Mumbai To Mumbai",
     originalPrice: 75000,
     price: 64999,
-    months: ["Jun", "Oct", "Nov", "Dec"],
+    months: ["Jun", "Oct", "Nov", "Dec", "Jan", "Feb"],
     international: true,
   },
   {
@@ -110,7 +155,7 @@ const ALL_TRIPS = [
     route: "Chennai To Chennai",
     originalPrice: 58000,
     price: 49999,
-    months: ["Jul", "Aug", "Sep", "Nov"],
+    months: ["Jul", "Aug", "Sep", "Nov", "Dec", "Jan"],
     international: true,
   },
   {
@@ -132,7 +177,29 @@ const ALL_TRIPS = [
     route: "Paro To Paro",
     originalPrice: 52000,
     price: 44999,
-    months: ["Sep", "Oct", "Nov", "Mar"],
+    months: ["Sep", "Oct", "Nov", "Mar", "Apr"],
+    international: true,
+  },
+  {
+    id: 17,
+    title: "Maldives Luxury Overwater Villa | 5 Days",
+    image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&h=600&fit=crop",
+    duration: "4N/5D",
+    route: "Mumbai To Male",
+    originalPrice: 95000,
+    price: 82999,
+    months: ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
+    international: true,
+  },
+  {
+    id: 18,
+    title: "Vietnam Heritage & Ha Long Bay | 8 Days",
+    image: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&h=600&fit=crop",
+    duration: "7N/8D",
+    route: "Hanoi To Ho Chi Minh",
+    originalPrice: 68000,
+    price: 58999,
+    months: ["Nov", "Dec", "Jan", "Feb", "Mar"],
     international: true,
   },
 ];
@@ -202,32 +269,38 @@ export function MostDemanded() {
         </div>
       </div>
 
-      {/* Month filter tabs */}
-      <div
-        className="overflow-x-auto pb-1 mb-5"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        <style>{`.month-scroll::-webkit-scrollbar{display:none}`}</style>
-        <div className="flex items-end gap-0.5 min-w-max month-scroll">
-          {MONTHS.map((month) => {
-            const isActive = activeMonth === month && !isMoreMonth;
-            return (
-              <button
-                key={month}
-                onClick={() => { setActiveMonth(month); setShowMoreDropdown(false); }}
-                className="relative px-3 py-1.5 text-[14px] font-semibold transition-colors whitespace-nowrap"
-                style={{ color: isActive ? "#2563eb" : "#6b7280" }}
-              >
-                {month}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-blue-600" />
-                )}
-              </button>
-            );
-          })}
+      {/* Month filter tabs + More button */}
+      {/* Note: More button is OUTSIDE the overflow-x-auto div so its dropdown never gets clipped */}
+      <div className="relative mb-5">
+        <div className="flex items-center">
+          {/* Scrollable month tabs */}
+          <div
+            className="overflow-x-auto flex-1"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            <style>{`.month-scroll::-webkit-scrollbar{display:none}`}</style>
+            <div className="flex items-end gap-0.5 min-w-max month-scroll">
+              {MONTHS.map((month) => {
+                const isActive = activeMonth === month && !isMoreMonth;
+                return (
+                  <button
+                    key={month}
+                    onClick={() => { setActiveMonth(month); setShowMoreDropdown(false); }}
+                    className="relative px-3 py-1.5 text-[14px] font-semibold transition-colors whitespace-nowrap"
+                    style={{ color: isActive ? "#2563eb" : "#6b7280" }}
+                  >
+                    {month}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-blue-600" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-          {/* More dropdown */}
-          <div className="relative ml-1" ref={dropdownRef}>
+          {/* More button — outside scroll so dropdown is never clipped */}
+          <div className="relative shrink-0 ml-1" ref={dropdownRef}>
             <button
               onClick={() => setShowMoreDropdown((v) => !v)}
               className={`flex items-center gap-1 px-4 py-1.5 rounded-full text-[13px] font-semibold transition-colors ${
@@ -247,7 +320,7 @@ export function MostDemanded() {
             </button>
 
             {showMoreDropdown && (
-              <div className="absolute right-0 top-10 bg-white rounded-2xl shadow-2xl z-50 py-2 min-w-[110px] border border-gray-100">
+              <div className="absolute right-0 top-10 bg-white rounded-2xl shadow-2xl z-[999] py-2 min-w-[110px] border border-gray-100">
                 {MORE_MONTHS.map((month) => (
                   <button
                     key={month}

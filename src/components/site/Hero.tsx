@@ -400,31 +400,33 @@ export function Hero() {
                   <Link
                     key={pkg.id || idx}
                     to="/packages"
-                    className="block rounded-2xl overflow-hidden shadow-lg bg-white"
+                    className="block rounded-2xl overflow-hidden shadow-md bg-white"
                   >
-                    {/* Image block — title overlaid directly on it */}
-                    <div className="relative h-44 w-full">
+                    {/* Image — title overlaid bottom-left exactly like reference */}
+                    <div className="relative w-full" style={{ aspectRatio: "4/3" }}>
                       <img
                         src={pkg.image || pkg.coverImage || pkg.images?.[0] || currentSlide.image}
                         alt={pkg.title || pkg.name || pkg.destination}
                         className="absolute inset-0 w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/10" />
+                      {/* gradient only at bottom for title readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-                      {/* Title pinned near bottom of image */}
-                      <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                        <p className="text-white text-[13px] font-bold leading-tight line-clamp-2 drop-shadow-md">
+                      {/* Title — bottom-left, bold white, exactly like reference */}
+                      <div className="absolute bottom-2 left-2.5 right-2.5">
+                        <p className="text-white text-[12px] font-bold leading-tight line-clamp-2 drop-shadow">
                           {pkg.title || pkg.name || pkg.destination}
                         </p>
                       </div>
                     </div>
 
-                    {/* White info strip — duration (if present) + destination + price */}
-                    <div className="px-2.5 pt-2 pb-2.5 bg-white">
-                      <div className="flex items-center gap-2.5 text-[10.5px] text-gray-500 mb-1.5">
+                    {/* White info section below image — duration + destination + price */}
+                    <div className="px-2.5 pt-2 pb-3 bg-white">
+                      {/* Duration + destination row with icons */}
+                      <div className="flex items-center gap-2 text-[10px] text-gray-500 mb-1.5 flex-wrap">
                         {pkg.duration && (
-                          <span className="flex items-center gap-1">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3 shrink-0">
+                          <span className="flex items-center gap-0.5">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-2.5 w-2.5 shrink-0">
                               <circle cx="12" cy="12" r="9" />
                               <path d="M12 7v5l3 3" />
                             </svg>
@@ -432,19 +434,20 @@ export function Hero() {
                           </span>
                         )}
                         {pkg.destination && (
-                          <span className="flex items-center gap-1 truncate">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3 shrink-0">
+                          <span className="flex items-center gap-0.5 min-w-0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-2.5 w-2.5 shrink-0">
                               <path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z" />
-                              <circle cx="12" cy="9" r="2.2" />
+                              <circle cx="12" cy="9" r="2" />
                             </svg>
                             <span className="truncate">{pkg.destination}</span>
                           </span>
                         )}
                       </div>
 
-                      <span className="text-[15px] font-bold text-gray-900">
+                      {/* Price — clean bold, no strikethrough, matching reference */}
+                      <p className="text-[15px] font-bold text-gray-900">
                         ₹{(pkg.price || 0).toLocaleString("en-IN")}
-                      </span>
+                      </p>
                     </div>
                   </Link>
                 );
