@@ -17,7 +17,6 @@ import { Route as OptionsRouteImport } from './routes/options'
 import { Route as DestinationsRouteImport } from './routes/destinations'
 import { Route as BestSellerRouteImport } from './routes/best-seller'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as SearchPackageIdRouteImport } from './routes/search.$packageId'
@@ -67,11 +66,6 @@ const BestSellerRoute = BestSellerRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -127,7 +121,6 @@ const AdminDestinationsRoute = AdminDestinationsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/best-seller': typeof BestSellerRoute
   '/destinations': typeof DestinationsRoute
@@ -148,7 +141,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/best-seller': typeof BestSellerRoute
   '/destinations': typeof DestinationsRoute
   '/options': typeof OptionsRoute
@@ -169,7 +161,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/best-seller': typeof BestSellerRoute
   '/destinations': typeof DestinationsRoute
@@ -192,7 +183,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
     | '/admin'
     | '/best-seller'
     | '/destinations'
@@ -213,7 +203,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
     | '/best-seller'
     | '/destinations'
     | '/options'
@@ -233,7 +222,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/about'
     | '/admin'
     | '/best-seller'
     | '/destinations'
@@ -255,7 +243,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   BestSellerRoute: typeof BestSellerRoute
   DestinationsRoute: typeof DestinationsRoute
@@ -324,13 +311,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -439,7 +419,6 @@ const SearchRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   BestSellerRoute: BestSellerRoute,
   DestinationsRoute: DestinationsRoute,

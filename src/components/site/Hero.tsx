@@ -521,12 +521,16 @@ export function Hero() {
                   Explore Trips
                 </Button>
               </Link>
-              <Link to="/about">
+              <button
+                type="button"
+                onClick={() => (window.location.href = "/about")}
+                className="rounded-full"
+              >
                 <Button variant="outline" className="rounded-full h-14 px-8 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 text-base">
                   <Play className="mr-2 h-4 w-4 shrink-0" />
                   Watch Story
                 </Button>
-              </Link>
+              </button>
             </motion.div>
 
             <motion.div

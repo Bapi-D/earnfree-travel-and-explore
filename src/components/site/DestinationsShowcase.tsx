@@ -3,6 +3,7 @@ import { ArrowRight, Clock3, MapPinned, Star, Sparkles, Globe2 } from "lucide-re
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getFirestorePackages, getFirestoreDestinations, type FirestoreDestinationRow } from "@/lib/firebase-data";
+import type { Package } from "@/data/packages";
 import { Button } from "@/components/ui/button";
 import { PUBLIC_DESTINATIONS } from "@/data/destinations";
 import { PackageCard } from "./PackageCard";
@@ -48,7 +49,7 @@ type DestinationCard = {
 
 
 export function DestinationsShowcase() {
-  const { data: destinationRows = [] } = useQuery({
+  const { data: destinationRows = [] } = useQuery<FirestoreDestinationRow[]>({
     queryKey: ["destinations"],
     queryFn: () => getFirestoreDestinations(),
     staleTime: 60_000,
@@ -59,7 +60,7 @@ export function DestinationsShowcase() {
   const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
   const q = params.get("q")?.trim();
 
-  const { data: packagesData = [] } = useQuery({
+  const { data: packagesData = [] } = useQuery<Package[]>({
     queryKey: ["packages"],
     queryFn: () => getFirestorePackages(),
     staleTime: 60_000,
@@ -101,7 +102,7 @@ export function DestinationsShowcase() {
     );
   }
 
-  const destinationCards = destinationRows.length > 0
+  const destinationCards: DestinationCard[] = destinationRows.length > 0
     ? destinationRows.map(mapFirestoreDestination)
     : PUBLIC_DESTINATIONS;
 

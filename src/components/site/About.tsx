@@ -16,17 +16,6 @@ export function About() {
       id="about"
       className="section bg-background relative overflow-hidden"
     >
-      {/* Premium Grid Background */}
-      <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(220,38,38,0.12) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(220,38,38,0.12) 1px, transparent 1px)
-          `,
-          backgroundSize: "50px 50px",
-        }}
-      />
 
       {/* Top Right Glow */}
       <div className="absolute top-0 right-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl pointer-events-none z-0" />
