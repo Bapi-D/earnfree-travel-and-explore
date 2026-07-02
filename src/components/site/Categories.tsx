@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { SectionHeader } from "./SectionHeader";
 import { CustomizedToursMobile } from "./CustomizedToursMobile";
+import GroupTour from "./Grouptour.tsx";
 
 const cats = [
   {
@@ -128,6 +129,8 @@ export function Categories() {
 
       {/* ============ MOBILE & TABLET (below lg) — Customized Tours ============ */}
       <CustomizedToursMobile />
+
+      <GroupTour />
     </>
   );
 }
